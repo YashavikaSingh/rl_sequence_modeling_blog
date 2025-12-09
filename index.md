@@ -147,10 +147,10 @@ DT: Vertical attention stripes confirm the model explicitly "checks" the desired
 TT: Strong diagonal banding reveals it focuses on immediate past context over long term past.  
 IEM: Distributed grid-like attention states each position attends broadly across past AND future.  
 
-## Novel Insights
+# Novel Insights
 
 
-Conclusion
+# Conclusion
 
 The convergence of NLP and RL provides a unified framework where trajectories are treated as sentences, offering stability that traditional dynamic programming lacks. 
 The future lies in hybrid architectures: combining sequence models' distributional robustness with Q-learning's trajectory stitching, and LEAP's iterative refinement for composable, adaptable planning.
