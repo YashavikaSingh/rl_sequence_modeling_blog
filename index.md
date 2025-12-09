@@ -257,6 +257,10 @@ DT: Vertical attention stripes confirm the model explicitly "checks" the desired
 TT: Strong diagonal banding reveals it focuses on immediate past context over long term past.  
 IEM: Distributed grid-like attention states each position attends broadly across past AND future.  
 
+## Return Accumulation in Decision Transformer
+
+<img src="images/return accumulation decision transformer.png" alt="Return Accumulation Decision Transformer" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
+
 # Novel Insights
 
 
