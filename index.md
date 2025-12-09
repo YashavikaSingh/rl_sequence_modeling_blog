@@ -131,6 +131,49 @@ This project compares two transformer-based reinforcement learning models, both 
 
 ---
 
+### 3. Iterative Energy Minimization (IEM) / LEAP
+
+**Source:** Original GitHub Repository  
+**Model Type:** Iterative Energy Minimization (LEAP)  
+**Architecture:** BERT-like masked language model that learns an implicit energy function over action trajectories
+
+**Key Characteristics:**
+- Uses a masked language model to capture energy functions over trajectories
+- Formulates planning as finding trajectories with minimal energy
+- Iteratively refines and "denoises" full plans at once
+- Better for tasks requiring structured planning and composability
+
+**Implementation Details:**
+- Implemented from the original GitHub repository (link: [GitHub Repository](https://github.com/hychen-naza/LEAP))
+- Modified the forward function to create custom attention masks for trajectory planning
+- Evaluated on **BabyAI** environment for instruction-following and compositional reasoning tasks
+
+**Custom Modifications:**
+- Edited the forward function to create attention masks that control which parts of the trajectory the model can attend to during the iterative refinement process
+- This allows for more fine-grained control over the planning and energy minimization process
+
+---
+
+## BabyAI Dataset
+
+### What is BabyAI?
+
+**BabyAI** is a research platform designed to study instruction-following and compositional reasoning in reinforcement learning. It provides a suite of grid-world environments where agents must understand and execute natural language instructions to complete tasks.
+
+**Key Features:**
+- **Instruction-following**: Agents receive natural language instructions (e.g., "go to the red ball")
+- **Compositional tasks**: Instructions can be combined to create complex, multi-step objectives
+- **Grid-world environment**: Simple 2D grid-based navigation with objects, colors, and spatial relationships
+- **Curriculum learning**: Provides a range of difficulty levels from simple navigation to complex compositional reasoning
+
+**Why BabyAI for IEM/LEAP?**
+- Tests the model's ability to plan and reason compositionally
+- Requires understanding of language instructions and spatial relationships
+- Challenges the iterative refinement process with multi-step tasks
+- Provides a controlled environment to study attention patterns and planning behavior
+
+---
+
 ## HalfCheetah Dataset
 
 ### What is HalfCheetah?
