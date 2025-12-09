@@ -31,9 +31,11 @@ Iterative Energy Minimization (IEM): "The Refiner" – Uses a BERT-like masked m
 
 ## Inside the Black Box: Attention Analysis
 
-![DT Last Layer Attention Map](images/dt_last_layer_attention map.png)
-![TT Last Layer Attention Map](images/tt_last_layer attention map.png)
-![LEAP Baby AI](images/leap_baby_ai.png)
+<div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap;">
+  <img src="images/dt_last_layer_attention map.png" alt="DT Last Layer Attention Map" style="max-width: 30%; height: auto;">
+  <img src="images/tt_last_layer attention map.png" alt="TT Last Layer Attention Map" style="max-width: 30%; height: auto;">
+  <img src="images/leap_baby_ai.png" alt="LEAP Baby AI" style="max-width: 30%; height: auto;">
+</div>
 
 DT: Vertical attention stripes confirm the model explicitly "checks" the desired future reward before committing to an action.
 TT: Strong diagonal banding reveals it focuses on immediate past context over long term past.
