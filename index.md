@@ -157,10 +157,10 @@ The future lies in hybrid architectures: combining sequence models' distribution
 
 
 
-References
-Chen, L., et al. (2021). Decision Transformer: Reinforcement Learning via Sequence Modeling. NeurIPS.
-Janner, M., et al. (2021). Offline Reinforcement Learning as One Big Sequence Modeling Problem. NeurIPS.
-Chen, H., et al. (2023). Planning with Sequence Models through Iterative Energy Minimization. ICLR.
+# References
+Chen, L., et al. (2021). Decision Transformer: Reinforcement Learning via Sequence Modeling. NeurIPS.   
+Janner, M., et al. (2021). Offline Reinforcement Learning as One Big Sequence Modeling Problem. NeurIPS.  
+Chen, H., et al. (2023). Planning with Sequence Models through Iterative Energy Minimization. ICLR.  
 
 
 
