@@ -3,7 +3,8 @@ layout: default
 title: "RL Sequence Modeling Blog"
 ---
 
-# Transformers, take the Wheel! Sequence Modeling in Offline RL
+# Transformers, take the Wheel! 
+## Sequence Modeling in Offline RL
 
 
 Reinforcement Learning (RL) has traditionally relied on value estimation and Bellman updates, which are often unstable and difficult to tune. 
@@ -25,12 +26,14 @@ Architecture used: casual GPT
 
 
 
-
-
 Iterative Energy Minimization (IEM): "The Refiner" – Uses a BERT-like masked model to iteratively "denoise" and optimize a full plan at once, minimizing a learned energy function.
 
 
-Attention Analysis
+## Inside the Black Box: Attention Analysis
+
+![DT Last Layer Attention Map](images/dt_last_layer_attention map.png)
+![TT Last Layer Attention Map](images/tt_last_layer attention map.png)
+![LEAP Baby AI](images/leap_baby_ai.png)
 
 DT: Vertical attention stripes confirm the model explicitly "checks" the desired future reward before committing to an action.
 TT: Strong diagonal banding reveals it focuses on immediate past context over long term past.
