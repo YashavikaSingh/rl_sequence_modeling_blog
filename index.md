@@ -62,6 +62,8 @@ The challenge is that once the agent is trained, its policy may choose actions t
  It establishes the baseline proof-of-concept models Reinforcement Learning as a Sequential modeling task.
 Architecture used: causal GPT
 
+<img src="images/decision_transformer_architecture.png" alt="Decision Transformer Architecture" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
+
 
 # Trajectory Transformer
 
@@ -69,10 +71,17 @@ Architecture used: causal GPT
  IT accepts the premise of DT (RL is Sequence Modeling) but critiques the "blind" generation. To actively plan into the future, it adapts the NLP concept of Beam Search. 
 Architecture used: causal GPT
 
+<img src="images/tt_architecture.png" alt="Trajectory Transformer Architecture" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
+
 
 
 # Iterative Energy Minimization
 *Iterative Energy Minimization (IEM)*: "The Refiner" – Uses a BERT-like masked model to iteratively "denoise" and optimize a full plan at once, minimizing a learned energy function.
+
+<div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 20px; margin: 20px 0;">
+  <img src="images/iem_architecture.png" alt="IEM Architecture" style="max-width: 45%; height: auto;">
+  <img src="images/energy_minimization_iem.png" alt="Energy Minimization IEM" style="max-width: 45%; height: auto;">
+</div>
 
 # Models and data sets
 
