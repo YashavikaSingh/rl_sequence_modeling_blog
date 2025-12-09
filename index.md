@@ -35,7 +35,7 @@ The action-value function (Q-function) sharpens that by conditioning on the firs
 $Q^π(s, a) = E_π [ G_t | s_t = s, a_t = a ]$
 
 The Bellman equations are where the recursion magic happens. They break down long-term value into “reward now plus value later”:
-$V^π(s) = E_{a ~ π, s' ~ P} [ r(s, a) + γ V^π(s') ]$
+$V^π(s) = E_{a ~ π, s' ~ P} [ r(s, a) + γ V^π(s') ]$  
 $Q*(s, a) = E_{s' ~ P} [ r(s, a) + γ max_{a'} Q*(s', a') ]$
 
 For control (trying to find the best policy), you get the Bellman optimality equation:
@@ -123,6 +123,11 @@ This project compares two transformer-based reinforcement learning models, both 
 ### What is HalfCheetah?
 
 **HalfCheetah** is a continuous control benchmark task from the MuJoCo physics simulator, part of the D4RL (Datasets for Deep Data-Driven Reinforcement Learning) benchmark suite. It is one of the most commonly used environments for evaluating offline reinforcement learning algorithms.
+
+<div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 20px; margin: 20px 0;">
+  <img src="images/halfcheetah.png" alt="HalfCheetah Environment" style="max-width: 45%; height: auto;">
+  <img src="images/half_cheetah.gif" alt="HalfCheetah Animation" style="max-width: 45%; height: auto;">
+</div>
 
 ### Environment Description
 
