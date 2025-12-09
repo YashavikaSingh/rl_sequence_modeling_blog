@@ -158,6 +158,14 @@ This project compares two transformer-based reinforcement learning models, both 
 
 ### What is BabyAI?
 
+
+<div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 20px; margin: 20px 0;">
+  <img src="images/GoToLocal.gif" alt="GoToLocal Task" style="max-width: 30%; height: auto;">
+  <img src="images/GoToRedBallGrey.gif" alt="GoToRedBall Task" style="max-width: 30%; height: auto;">
+  <img src="images/Pickup.gif" alt="Pickup Task" style="max-width: 30%; height: auto;">
+</div>
+
+
 **BabyAI** is a research platform designed to study instruction-following and compositional reasoning in reinforcement learning. It provides a suite of grid-world environments where agents must understand and execute natural language instructions to complete tasks.
 
 **Key Features:**
@@ -172,11 +180,7 @@ This project compares two transformer-based reinforcement learning models, both 
 - Challenges the iterative refinement process with multi-step tasks
 - Provides a controlled environment to study attention patterns and planning behavior
 
-<div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 20px; margin: 20px 0;">
-  <img src="images/GoToLocal.gif" alt="GoToLocal Task" style="max-width: 30%; height: auto;">
-  <img src="images/GoToRedBallGrey.gif" alt="GoToRedBall Task" style="max-width: 30%; height: auto;">
-  <img src="images/Pickup.gif" alt="Pickup Task" style="max-width: 30%; height: auto;">
-</div>
+
 
 ---
 
