@@ -14,9 +14,36 @@ This project explores a paradigm shift: treating RL as a Sequence Modeling probl
 
 # What is reinforcement learning
 
-<img src="RL.png" alt="Reinforcement Learning" style="max-width: 50%; height: auto; display: block; margin: 0 auto;">
+<img src="RL.png" alt="Reinforcement Learning" style="max-width: 40%; height: auto; display: block; margin: 0 auto;">
 
 Reinforcement learning is the third paradigm in machine learning after supervised and unsupervised learning. An agent wanders through an environment. At any moment it sits in some state $s$. It takes an action $a$. The world replies with a reward $r$ and shifts the agent to a new state $s'$.
+
+Anytime an agent moves through a sequence of states, takes actions, and receives rewards, you’ve got a trajectory.You can think of it as the agent’s diary: every state visited, every choice made, and every pat-on-the-head (or slap-on-the-wrist) from the environment.   
+$τ = (s₀, a₀, r₀, s₁, a₁, r₁, …, s_T) $
+
+
+A policy is a probability distribution over actions:  
+$π(a | s)$
+
+The return—the total “goodness” of a trajectory—is the discounted sum of rewards:
+$G_t = r_t + γ r_{t+1} + γ² r_{t+2} + … = Σ_{k=0}^{∞} γ^k r_{t+k}$  
+
+The value function is just the expected return if you start in a state and follow the policy:
+$V^π(s) = E_π [ G_t | s_t = s ]$  
+
+The action-value function (Q-function) sharpens that by conditioning on the first action:
+$Q^π(s, a) = E_π [ G_t | s_t = s, a_t = a ]$
+
+The Bellman equations are where the recursion magic happens. They break down long-term value into “reward now plus value later”:
+$V^π(s) = E_{a ~ π, s' ~ P} [ r(s, a) + γ V^π(s') ]$
+$Q*(s, a) = E_{s' ~ P} [ r(s, a) + γ max_{a'} Q*(s', a') ]$
+
+For control (trying to find the best policy), you get the Bellman optimality equation:
+$Q*(s, a) = E_{s' ~ P} [ r(s, a) + γ max_{a'} Q*(s', a') ]$
+
+
+
+Reinforecment learning's become the backbone in many technologies. It's used in self driving cars, financial trades, recommendation systems, drones, robot manipulation etc.
 
 # What is offline Reinforcement learning
 
