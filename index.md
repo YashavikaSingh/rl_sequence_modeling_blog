@@ -259,7 +259,7 @@ IEM: Distributed grid-like attention states each position attends broadly across
 
 ## Return Accumulation in Decision Transformer
 
-<img src="images/return accumulation decision transformer.png" alt="Return Accumulation Decision Transformer" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
+<img src="images/return accumulation decision transformer.png" alt="Return Accumulation Decision Transformer" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
 
 # Novel Insights
 
