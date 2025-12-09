@@ -1,6 +1,7 @@
 ---
-title: "RL Sequence Modeling Blog"
 layout: default
+title: "RL Sequence Modeling Blog"
+
 ---
 
 # RL Sequence Modeling Blog
