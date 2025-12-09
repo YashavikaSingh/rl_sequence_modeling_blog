@@ -1,10 +1,10 @@
 ---
 layout: default
 title: "RL Sequence Modeling Blog"
-
 ---
 
-# RL Sequence Modeling Blog
+# Transformers, take the Wheel! Sequence Modeling in Offline RL
+
 
 Reinforcement Learning (RL) has traditionally relied on value estimation and Bellman updates, which are often unstable and difficult to tune. 
 
