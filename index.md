@@ -12,21 +12,127 @@ Reinforcement Learning (RL) has traditionally relied on value estimation and Bel
 This project explores a paradigm shift: treating RL as a Sequence Modeling problem. We analyze and replicate three Transformer-based approaches—Decision Transformer (DT), Trajectory Transformer (TT), and Iterative Energy Minimization (IEM)—to understand how language modeling architectures can solve decision-making tasks.
 
 
-Decision Transformer (DT): It establishes the baseline proof-of-concept models Reinforcement Learning as a Sequential modeling task.
+*Decision Transformer (DT):* It establishes the baseline proof-of-concept models Reinforcement Learning as a Sequential modeling task.
 Architecture used: causal GPT
 
 
+*Trajectory Transformer (TT):* IT accepts the premise of DT (RL is Sequence Modeling) but critiques the "blind" generation. To actively plan into the future, it adapts the NLP concept of Beam Search. 
+Architecture used: causal GPT
 
 
+*Iterative Energy Minimization (IEM)*: "The Refiner" – Uses a BERT-like masked model to iteratively "denoise" and optimize a full plan at once, minimizing a learned energy function.
 
+## Models and data sets
 
-Trajectory Transformer (TT): IT accepts the premise of DT (RL is Sequence Modeling) but critiques the "blind" generation. To actively plan into the future, it adapts the NLP concept of Beam Search. 
-Architecture used: casual GPT
+### HuggingFace Models Used
 
+This project compares two transformer-based reinforcement learning models, both pretrained on the HalfCheetah dataset and available on HuggingFace:
 
+### 1. Decision Transformer (DT)
 
+**Model Identifier:** `edbeeching/decision-transformer-gym-halfcheetah-medium`
 
-Iterative Energy Minimization (IEM): "The Refiner" – Uses a BERT-like masked model to iteratively "denoise" and optimize a full plan at once, minimizing a learned energy function.
+**Source:** HuggingFace Transformers Library  
+**Model Type:** Decision Transformer  
+**Architecture:** Transformer-based sequence model that conditions on return-to-go (R̂) to generate actions
+
+**Key Characteristics:**
+- Uses conditional generation based on desired return-to-go
+- Input format: `[R̂, s, a, R̂, s, a, ...]` (interleaved return-to-go, states, and actions)
+- Autoregressive action prediction
+- Fast inference (single forward pass per action)
+
+**Implementation Details:**
+- Loaded via `DecisionTransformerModel.from_pretrained()` from `transformers` library
+- Evaluated on `HalfCheetah-v4` environment from Gymnasium
+- Default target return: 3600
+
+---
+
+### 2. Trajectory Transformer (TT)
+
+**Model Identifier:** `CarlCochet/trajectory-transformer-halfcheetah-medium-v2`
+
+**Source:** HuggingFace Transformers Library  
+**Model Type:** Trajectory Transformer  
+**Architecture:** Transformer-based model that learns joint distributions over full trajectories
+
+**Key Characteristics:**
+- Models complete trajectory distributions
+- Input format: `[s, a, r, s, a, r, ...]` (interleaved states, actions, and rewards)
+- Uses beam search for planning (explores multiple trajectory hypotheses)
+- Better for long-horizon planning tasks
+
+**Implementation Details:**
+- Loaded via `TrajectoryTransformerModel.from_pretrained()` from `transformers` library
+- Evaluated on `HalfCheetah-v4` environment from Gymnasium
+- Supports beam search with configurable beam widths (K = 1, 2, 4, 8, 16, 32)
+
+---
+
+## HalfCheetah Dataset
+
+### What is HalfCheetah?
+
+**HalfCheetah** is a continuous control benchmark task from the MuJoCo physics simulator, part of the D4RL (Datasets for Deep Data-Driven Reinforcement Learning) benchmark suite. It is one of the most commonly used environments for evaluating offline reinforcement learning algorithms.
+
+### Environment Description
+
+**Task:** The agent controls a 2D cheetah robot (half of a full cheetah body) and must learn to run forward as fast as possible.
+
+**State Space:**
+- 17-dimensional continuous state vector
+- Includes: body position, velocity, joint angles, joint velocities, and other kinematic features
+
+**Action Space:**
+- 6-dimensional continuous action space
+- Represents torques applied to the 6 joints of the cheetah
+
+**Reward Function:**
+- Dense reward based on forward velocity
+- Encourages the agent to run forward efficiently
+- Typical episode returns range from ~0 to ~6000+ depending on policy quality
+
+### Dataset Variants: "Medium" Quality
+
+The "medium" suffix in the model names (`halfcheetah-medium`) refers to the **D4RL dataset quality level** used for pretraining:
+
+**D4RL Dataset Quality Levels:**
+- **random**: Trajectories from a random policy (lowest quality)
+- **medium**: Trajectories from a partially trained policy (medium quality)
+- **medium-replay**: Mix of medium-quality trajectories and some from replay buffer
+- **medium-expert**: Mix of medium and expert-level trajectories
+- **expert**: Trajectories from a fully trained expert policy (highest quality)
+
+**"Medium" Dataset Characteristics:**
+- Contains trajectories from a policy that achieves approximately 50-60% of expert performance
+- Provides a good balance between diversity and quality
+- Commonly used for offline RL research as it represents realistic scenarios where you have suboptimal but useful demonstration data
+- Typically contains thousands of trajectories collected from the HalfCheetah-v4 environment
+
+### Why HalfCheetah?
+
+HalfCheetah is widely used in offline RL research because:
+1. **Well-understood benchmark**: Established baseline with known performance metrics
+2. **Continuous control**: Tests ability to handle continuous state and action spaces
+3. **Dense rewards**: Provides learning signal throughout the episode
+4. **Moderate complexity**: Not too simple (like CartPole) but not too complex (like humanoid), making it ideal for method development
+5. **Standardized evaluation**: Part of D4RL, ensuring fair comparisons across papers
+
+### Pretraining Process
+
+Both models were pretrained on offline trajectory data from the HalfCheetah medium-quality dataset:
+- **DT**: Trained to predict actions conditioned on return-to-go values
+- **TT**: Trained to model the joint probability distribution over state-action-reward sequences
+
+ntion patterns and decision-making processes (as done in this project)
+
+---
+
+## HuggingFace Model Cards
+  - DT: https://huggingface.co/edbeeching/decision-transformer-gym-halfcheetah-medium
+  - TT: https://huggingface.co/CarlCochet/trajectory-transformer-halfcheetah-medium-v2
+
 
 
 ## Inside the Black Box: Attention Analysis
@@ -37,9 +143,11 @@ Iterative Energy Minimization (IEM): "The Refiner" – Uses a BERT-like masked m
   <img src="images/leap_baby_ai.png" alt="LEAP Baby AI" style="max-width: 30%; height: auto;">
 </div>
 
-DT: Vertical attention stripes confirm the model explicitly "checks" the desired future reward before committing to an action.
-TT: Strong diagonal banding reveals it focuses on immediate past context over long term past.
-IEM: Distributed grid-like attention states each position attends broadly across past AND future
+DT: Vertical attention stripes confirm the model explicitly "checks" the desired future reward before committing to an action.  
+TT: Strong diagonal banding reveals it focuses on immediate past context over long term past.  
+IEM: Distributed grid-like attention states each position attends broadly across past AND future.  
+
+## Novel Insights
 
 
 Conclusion
