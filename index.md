@@ -7,17 +7,22 @@ title: "RL Sequence Modeling Blog"
 ## Sequence Modeling in Offline RL
 
 
-# What is reinforcement learning
 Reinforcement Learning (RL) has traditionally relied on value estimation and Bellman updates, which are often unstable and difficult to tune. 
 
 This project explores a paradigm shift: treating RL as a Sequence Modeling problem. We analyze and replicate three Transformer-based approaches—Decision Transformer (DT), Trajectory Transformer (TT), and Iterative Energy Minimization (IEM)—to understand how language modeling architectures can solve decision-making tasks.
 
 
-# Offline Reinforcement learning
+# What is reinforcement learning
+
+<img src="RL.png" alt="Reinforcement Learning" style="max-width: 100%; height: auto;">
+
+Reinforcement learning is the third paradigm in machine learning after supervised and unsupervised learning. An agent wanders through an environment. At any moment it sits in some state $s$. It takes an action $a$. The world replies with a reward $r$ and shifts the agent to a new state $s'$.
+
+# What is offline Reinforcement learning
 
 
 
-# Why sequence modeling for reinforcement learning
+# Transformers enter the chat: why sequence modeling for reinforcement learning
 
 
 
@@ -184,5 +189,14 @@ Chen, L., et al. (2021). Decision Transformer: Reinforcement Learning via Sequen
 Janner, M., et al. (2021). Offline Reinforcement Learning as One Big Sequence Modeling Problem. NeurIPS.  
 Chen, H., et al. (2023). Planning with Sequence Models through Iterative Energy Minimization. ICLR.  
 
-
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$', '$$'], ['\\[', '\\]']]
+    }
+  };
+</script>
 
