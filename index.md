@@ -14,7 +14,7 @@ This project explores a paradigm shift: treating RL as a Sequence Modeling probl
 
 # What is reinforcement learning
 
-<img src="RL.png" alt="Reinforcement Learning" style="max-width: 100%; height: auto;">
+<img src="RL.png" alt="Reinforcement Learning" style="max-width: 50%; height: auto; display: block; margin: 0 auto;">
 
 Reinforcement learning is the third paradigm in machine learning after supervised and unsupervised learning. An agent wanders through an environment. At any moment it sits in some state $s$. It takes an action $a$. The world replies with a reward $r$ and shifts the agent to a new state $s'$.
 
