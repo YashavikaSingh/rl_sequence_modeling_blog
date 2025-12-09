@@ -7,22 +7,38 @@ title: "RL Sequence Modeling Blog"
 ## Sequence Modeling in Offline RL
 
 
+# What is reinforcement learning
 Reinforcement Learning (RL) has traditionally relied on value estimation and Bellman updates, which are often unstable and difficult to tune. 
 
 This project explores a paradigm shift: treating RL as a Sequence Modeling problem. We analyze and replicate three Transformer-based approaches—Decision Transformer (DT), Trajectory Transformer (TT), and Iterative Energy Minimization (IEM)—to understand how language modeling architectures can solve decision-making tasks.
 
 
-*Decision Transformer (DT):* It establishes the baseline proof-of-concept models Reinforcement Learning as a Sequential modeling task.
+# Offline Reinforcement learning
+
+
+
+# Why sequence modeling for reinforcement learning
+
+
+
+# Decision Transformer
+
+ It establishes the baseline proof-of-concept models Reinforcement Learning as a Sequential modeling task.
 Architecture used: causal GPT
 
 
-*Trajectory Transformer (TT):* IT accepts the premise of DT (RL is Sequence Modeling) but critiques the "blind" generation. To actively plan into the future, it adapts the NLP concept of Beam Search. 
+# Trajectory Transformer
+
+
+ IT accepts the premise of DT (RL is Sequence Modeling) but critiques the "blind" generation. To actively plan into the future, it adapts the NLP concept of Beam Search. 
 Architecture used: causal GPT
 
 
+
+# Iterative Energy Minimization
 *Iterative Energy Minimization (IEM)*: "The Refiner" – Uses a BERT-like masked model to iteratively "denoise" and optimize a full plan at once, minimizing a learned energy function.
 
-## Models and data sets
+# Models and data sets
 
 ### HuggingFace Models Used
 
@@ -134,6 +150,7 @@ ntion patterns and decision-making processes (as done in this project)
   - TT: https://huggingface.co/CarlCochet/trajectory-transformer-halfcheetah-medium-v2
 
 
+# Insights
 
 ## Inside the Black Box: Attention Analysis
 
@@ -149,6 +166,11 @@ IEM: Distributed grid-like attention states each position attends broadly across
 
 # Novel Insights
 
+
+
+
+# Limitations
+Transformers are memory and computation expensive, using transformers in RL is unlikely given that deploying these in robots or real time environments woudl make them slow.
 
 # Conclusion
 
