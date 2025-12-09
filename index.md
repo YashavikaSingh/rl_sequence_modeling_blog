@@ -45,9 +45,13 @@ $Q*(s, a) = E_{s' ~ P} [ r(s, a) + γ max_{a'} Q*(s', a') ]$
 
 Reinforecment learning's become the backbone in many technologies. It's used in self driving cars, financial trades, recommendation systems, drones, robot manipulation etc.
 
-# What is offline Reinforcement learning
+# What is Offline Reinforcement learning
 
+Offline reinforcement learning also known as batch reinforcement learning algorithms is the branch of RL that learns entirely from a fixed dataset of past interactions — no new exploration, no real-time environment access, just logged trajectories. 
 
+What led to the creation of offline RL was that  many real-world systems generate mountains of logged data, yet letting an RL agent “explore” those systems would be unsafe, expensive, or outright impossible. Classic RL assumes the agent can poke the environment endlessly, but hospitals, factories, self-driving cars, financial markets, and even large-scale robotics labs don’t offer unlimited retries. You often have terabytes of past trajectories sitting around, but no permission to interact again. Researchers wanted a way to turn those static logs into policies without risking  exploration.
+
+The challenge is that once the agent is trained, its policy may choose actions that never appeared in the dataset.   
 
 # Transformers enter the chat: why sequence modeling for reinforcement learning
 
@@ -132,15 +136,12 @@ This project compares two transformer-based reinforcement learning models, both 
 ### Environment Description
 
 **Task:** The agent controls a 2D cheetah robot (half of a full cheetah body) and must learn to run forward as fast as possible.
-
 **State Space:**
 - 17-dimensional continuous state vector
 - Includes: body position, velocity, joint angles, joint velocities, and other kinematic features
-
 **Action Space:**
 - 6-dimensional continuous action space
 - Represents torques applied to the 6 joints of the cheetah
-
 **Reward Function:**
 - Dense reward based on forward velocity
 - Encourages the agent to run forward efficiently
@@ -172,13 +173,6 @@ HalfCheetah is widely used in offline RL research because:
 4. **Moderate complexity**: Not too simple (like CartPole) but not too complex (like humanoid), making it ideal for method development
 5. **Standardized evaluation**: Part of D4RL, ensuring fair comparisons across papers
 
-### Pretraining Process
-
-Both models were pretrained on offline trajectory data from the HalfCheetah medium-quality dataset:
-- **DT**: Trained to predict actions conditioned on return-to-go values
-- **TT**: Trained to model the joint probability distribution over state-action-reward sequences
-
-ntion patterns and decision-making processes (as done in this project)
 
 ---
 
