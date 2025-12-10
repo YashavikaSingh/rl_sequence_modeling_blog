@@ -262,9 +262,9 @@ IEM: Distributed grid-like attention states each position attends broadly across
 
 ## Multilayer Attention Patterns
 
-<img src="images/dt_multilayer_attention.png" alt="DT Multilayer Attention" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
+<img src="images/dt_multilayer_attention.png" alt="DT Multilayer Attention" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
 
-<img src="images/tt_multilayer_attention.png" alt="TT Multilayer Attention" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
+<img src="images/tt_multilayer_attention.png" alt="TT Multilayer Attention" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
 
 ## Return Accumulation in Decision Transformer
 
@@ -274,13 +274,19 @@ IEM: Distributed grid-like attention states each position attends broadly across
 
 ## Attention Distribution Analysis
 
-<img src="images/insight_attention_distribution_stacked.png" alt="Attention Distribution Stacked Graph" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
+<img src="images/insight_attention_distribution_stacked.png" alt="Attention Distribution Stacked Graph" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
 
 ## Error Propagation Analysis
 
-<img src="images/insight3_error_propagation.png" alt="Error Propagation Insight" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
+<img src="images/insight3_error_propagation.png" alt="Error Propagation Insight" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
 
+## Head Entropy Analysis
 
+<img src="images/insight2_head_entropy_all_layers.png" alt="Head Entropy All Layers" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
+
+## Sparsity Analysis
+
+<img src="images/sparsity.png" alt="Sparsity Analysis" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
 
 # Limitations
 Transformers are memory and computation expensive, using transformers in RL is unlikely given that deploying these in robots or real time environments woudl make them slow.
