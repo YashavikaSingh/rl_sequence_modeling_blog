@@ -274,11 +274,11 @@ IEM: Distributed grid-like attention states each position attends broadly across
 
 ## Attention Distribution Analysis
 
-<img src="images/insight_attention_distribution_stacked.png" alt="Attention Distribution Stacked Graph" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
+<img src="images/insight_attention_distribution_stacked.png" alt="Attention Distribution Stacked Graph" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
 
 ## Error Propagation Analysis
 
-<img src="images/insight3_error_propagation.png" alt="Error Propagation Insight" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
+<img src="images/insight3_error_propagation.png" alt="Error Propagation Insight" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
 
 
 
