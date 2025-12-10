@@ -262,10 +262,9 @@ IEM: Distributed grid-like attention states each position attends broadly across
 
 ## Multilayer Attention Patterns
 
-<div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 20px; margin: 20px 0;">
-  <img src="images/dt_multilayer_attention.png" alt="DT Multilayer Attention" style="max-width: 45%; height: auto;">
-  <img src="images/tt_multilayer_attention.png" alt="TT Multilayer Attention" style="max-width: 45%; height: auto;">
-</div>
+<img src="images/dt_multilayer_attention.png" alt="DT Multilayer Attention" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
+
+<img src="images/tt_multilayer_attention.png" alt="TT Multilayer Attention" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
 
 ## Return Accumulation in Decision Transformer
 
@@ -280,20 +279,6 @@ IEM: Distributed grid-like attention states each position attends broadly across
 ## Error Propagation Analysis
 
 <img src="images/insight3_error_propagation.png" alt="Error Propagation Insight" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
-
-## Insight 1
-- **Y-axis**: Mean attention strength (log scale)
-- **Blue line**: How DT's attention strength changes over the episode
-
-"DT attention drops 95% over episode → explains error compounding → first quantitative measurement of this phenomenon"
-
-   - This exponential decay directly explains why errors compound in autoregressive models
-   - The decay rate (90-95%) quantifies the severity of the problem
-
- **Practical Implications**:
-   - Provides a diagnostic metric: if attention decays >90%, expect poor long-horizon performance
-   - Suggests architectural improvements: mechanisms to maintain attention strength (e.g., attention re-weighting, hierarchical attention)
-   - Guides model selection: use DT for short horizons, TT for long horizons
 
 
 
