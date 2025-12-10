@@ -262,13 +262,64 @@ IEM: Distributed grid-like attention states each position attends broadly across
 
 ## Multilayer Attention Patterns
 
+**What it shows:** This visualization displays attention heatmaps averaged across all heads for multiple transformer layers, comparing Decision Transformer (DT) and Trajectory Transformer (TT) side-by-side.
+
+**Axes:**
+- X-axis: Key position (which tokens the model can attend to)
+- Y-axis: Query position (which tokens are making the query)
+- Color intensity: Attention weight strength (brighter = stronger attention)
+
+**What it means:**
+- **Diagonal bands**: Indicate the model attends strongly to recent tokens (typical causal attention pattern). Each query position focuses on nearby key positions.
+- **Vertical patterns**: Show that certain key positions receive attention across many queries. This suggests those positions contain globally important information (e.g., return-to-go tokens, critical state features).
+- **Horizontal patterns**: Indicate certain queries attend broadly across keys, suggesting those positions need rich context to make decisions.
+
+**Layer progression**: As you move from lower to higher layers, the attention patterns evolve differently for DT and TT:
+
+
+
+
+
 <img src="images/dt_multilayer_attention.png" alt="DT Multilayer Attention" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
 
+
+**For Decision Transformer (DT):**
+- **Pattern becomes more vertical across layers**: As you progress from early to later layers, DT's attention develops increasingly strong vertical bands. Early layers show more diagonal patterns (local context), but later layers shift toward vertical patterns where certain key positions (return-to-go tokens, critical states) receive attention across all query positions.
+- **Why this happens**: DT's architecture relies heavily on the return-to-go conditioning signal. Deeper layers increasingly integrate this global conditioning information, causing vertical attention patterns to emerge as the model prioritizes goal-relevant tokens across the entire sequence.
+
+
+
+
 <img src="images/tt_multilayer_attention.png" alt="TT Multilayer Attention" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
+
+**For Trajectory Transformer (TT):**
+- **Diagonal bands persist, vertical bands emerge**: TT maintains diagonal attention patterns (sequential dependencies) throughout all layers, but also develops vertical bands in later layers. Unlike DT, TT doesn't replace diagonal patterns with vertical ones—instead, it adds vertical patterns while preserving diagonal structure.
+- **Why this happens**: TT models full trajectories jointly, requiring both local sequential processing (diagonal) and global trajectory features (vertical). The combination allows TT to maintain causal dependencies while also attending to globally important information like rewards and critical states across all positions.
+
+
+**Why it matters:** This layer-wise evolution reveals fundamental architectural differences. DT's shift from diagonal to vertical shows its increasing reliance on conditioning signals, while TT's hybrid pattern demonstrates its ability to maintain both local and global attention simultaneously. This dual focus in TT may explain its superior long-horizon performance—it preserves sequential context while building global trajectory understanding.
+
+
 
 ## Return Accumulation in Decision Transformer
 
 <img src="images/return accumulation decision transformer.png" alt="Return Accumulation Decision Transformer" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
+
+**What it shows:** This plot tracks how the return-to-go (R̂) value changes throughout an episode. R̂ represents the remaining return needed to achieve the target: `R̂ = Target Return - Cumulative Reward Received So Far`.
+
+**Axes:** 
+- X-axis: Episode timestep (progress through the episode)
+- Y-axis: Return-to-Go value (typically starts at target return, decreases toward zero)
+
+**What it means:** 
+- **Decreasing R̂**: As the agent accumulates rewards, R̂ decreases, indicating progress toward the target return. A smooth downward trend suggests consistent reward collection.
+- **R̂ → 0**: When R̂ approaches zero, the agent has achieved (or nearly achieved) the target return. This is the desired outcome.
+- **Tracking error**: The difference between R̂ and actual remaining return reveals how well DT tracks its conditioning signal. Large tracking errors indicate the model's internal estimate of progress diverges from reality, which can lead to poor decisions.
+
+**Why it matters:** DT uses R̂ as its primary conditioning signal—it tells the model "how much return do we still need?" If R̂ tracking is poor, the model receives incorrect guidance and may over- or under-shoot the target. This graph reveals whether DT maintains accurate internal state about progress toward goals, which is critical for goal-conditioned behavior.
+
+
+
 
 # Novel Insights
 
