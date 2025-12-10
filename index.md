@@ -282,11 +282,15 @@ IEM: Distributed grid-like attention states each position attends broadly across
 
 ## Head Entropy Analysis
 
-<img src="images/insight2_head_entropy_all_layers.png" alt="Head Entropy All Layers" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
+<img src="images/insight2_head_entropy_all_layers.png" alt="Head Entropy All Layers" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
 
 ## Sparsity Analysis
 
 <img src="images/sparsity.png" alt="Sparsity Analysis" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
+
+## Compute Cost Comparison
+
+<img src="images/compute_cost_comparison.png" alt="Compute Cost Comparison" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
 
 # Limitations
 Transformers are memory and computation expensive, using transformers in RL is unlikely given that deploying these in robots or real time environments woudl make them slow.
