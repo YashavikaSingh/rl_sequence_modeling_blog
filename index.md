@@ -331,11 +331,6 @@ IEM: Distributed grid-like attention states each position attends broadly across
 
 <img src="images/compute_cost_comparison.png" alt="Compute Cost Comparison" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
 
-• DT: O(T) compute - single forward pass per step
-• TT: O(T × K) compute - K forward passes per step
-• Higher K improves planning but increases cost
-
-
 **How it was calculated:** We measured actual inference times for both models. DT's cost = average latency per step × number of steps. TT's cost = episode time × beam width K (tested K=1,2,4,8,16,32), since each step requires K parallel forward passes.
 
 **Axes:** X-axis: beam width K. Y-axis: compute cost in ms per episode (log scale). DT appears as a horizontal line (constant cost, one forward pass per step).
