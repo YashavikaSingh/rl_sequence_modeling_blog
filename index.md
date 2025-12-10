@@ -276,6 +276,18 @@ IEM: Distributed grid-like attention states each position attends broadly across
 
 <img src="images/insight_attention_distribution_stacked.png" alt="Attention Distribution Stacked Graph" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
 
+
+**How it was calculated:** This stacked area chart analyzes Decision Transformer's attention patterns by extracting attention weights from the last query position (where the next action is predicted) across multiple snapshots during an episode. For each snapshot, we partition the attention allocation into four categories: (1) Return-to-Go (RTG) token attention (position 0), (2) recent timesteps (last 25% of sequence), (3) middle timesteps (25-75%), and (4) old timesteps (first 25% after RTG). The attention weights are normalized to sum to 1.0, and we track how this allocation evolves over the episode.
+
+**Axes:** The x-axis represents episode timestep (the progression through the episode), while the y-axis shows attention allocation (ranging from 0 to 1.0, representing the fraction of total attention devoted to each category). The stacked areas show how attention is distributed across the four time windows, with the total height always summing to 1.0.
+
+**Why this insight is novel:** While attention heatmaps show where attention is allocated spatially, this visualization reveals the temporal dynamics of attention allocation—how the model's focus shifts as the episode progresses. This is particularly novel for Decision Transformer because it quantifies the relative importance of the conditioning signal (RTG token) versus historical context, revealing whether the model relies more on the desired return or past experience when making decisions.
+
+**What it means:** The plot reveals Decision Transformer's attention strategy: it heavily weights the Return-to-Go token early in the episode (the conditioning signal telling it what return to achieve), but as the episode progresses, attention shifts toward recent timesteps. This suggests DT uses RTG as an initial guide but increasingly relies on recent state-action history to make decisions. The declining attention to old timesteps indicates that DT doesn't maintain long-term memory of early episode dynamics, which may explain its challenges with long-horizon planning. Understanding this distribution helps explain why DT excels at short-horizon tasks with clear return targets but struggles when long-term context is needed.
+
+
+
+
 ## Error Propagation Analysis
 
 <img src="images/insight3_error_propagation.png" alt="Error Propagation Insight" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
@@ -291,6 +303,20 @@ IEM: Distributed grid-like attention states each position attends broadly across
 ## Compute Cost Comparison
 
 <img src="images/compute_cost_comparison.png" alt="Compute Cost Comparison" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
+
+• DT: O(T) compute - single forward pass per step
+• TT: O(T × K) compute - K forward passes per step
+• Higher K improves planning but increases cost
+
+**How it was calculated:** This plot directly measures computational overhead by running actual inference on both models. For Decision Transformer (DT), we measured the average inference time per step during a 100-step episode, then multiplied by the number of steps to get total compute cost. For Trajectory Transformer (TT), we evaluated the model with different beam widths (K=1, 2, 4, 8, 16, 32) by running K parallel forward passes per step and measuring the total episode time. The compute cost for TT scales as `avg_time × K`, reflecting the linear relationship between beam width and computational expense.
+
+**Axes:** The x-axis represents beam width (K) for TT, while the y-axis shows compute cost in milliseconds per episode (displayed on a log scale when costs vary widely). DT appears as a horizontal dashed line since it maintains constant compute cost regardless of beam width—it always performs a single forward pass per step.
+
+**Why this insight is novel:** While the theoretical complexity difference between autoregressive (O(T)) and beam search (O(T×K)) models is well-known, this visualization provides empirical evidence of the actual computational trade-off. Most prior work discusses beam search in abstract terms; here we quantify exactly how much additional compute is required for each increment in beam width, making the cost-benefit analysis concrete for practitioners.
+
+**What it means:** The plot reveals that TT's compute cost grows linearly with beam width, meaning doubling the beam width doubles the computational expense. This creates a fundamental trade-off: higher beam widths enable better planning by exploring more trajectory hypotheses, but at exponentially increasing cost. DT, in contrast, maintains constant low compute cost but lacks the planning flexibility of beam search. The visualization helps practitioners choose the appropriate model based on their compute budget and task horizon—DT for real-time applications where speed is critical, and TT for long-horizon tasks where planning quality justifies the additional cost.
+
+
 
 # Limitations
 Transformers are memory and computation expensive, using transformers in RL is unlikely given that deploying these in robots or real time environments woudl make them slow.
