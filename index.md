@@ -461,6 +461,7 @@ The following table compares sequence modeling approaches (DT, TT, LEAP) against
 <h4>3. Atari: Energy-Based Methods Excel</h4>
 <p>LEAP (IEM) achieves the best performance on Atari (132.6), outperforming both DT (97.9) and traditional methods. This suggests that <strong>iterative refinement</strong> and <strong>bidirectional planning</strong> are particularly effective for complex, structured tasks like Atari games.</p>
 </div>
+</div>
 
 ## 7.b Attention Analysis
 
