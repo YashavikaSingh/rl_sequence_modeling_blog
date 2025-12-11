@@ -409,15 +409,24 @@ The future lies in hybrid architectures: combining sequence models' distribution
 
 
 # References
-Chen, L., et al. (2021). Decision Transformer: Reinforcement Learning via Sequence Modeling. NeurIPS.   
-Janner, M., et al. (2021). Offline Reinforcement Learning as One Big Sequence Modeling Problem. NeurIPS.  
+
+Chen, L., et al. (2021). Decision Transformer: Reinforcement Learning via Sequence Modeling. NeurIPS.
+
+Janner, M., et al. (2021). Offline Reinforcement Learning as One Big Sequence Modeling Problem. NeurIPS.
+
 Chen, H., et al. (2023). Planning with Sequence Models through Iterative Energy Minimization. ICLR.
 
-[^rl_wiki]: Reinforcement Learning. Wikipedia. https://en.wikipedia.org/wiki/Reinforcement_learning
+Wikipedia Contributors. (n.d.). Reinforcement Learning. Wikipedia. https://en.wikipedia.org/wiki/Reinforcement_learning
 
-[^minigrid]: MiniGrid Documentation. Farama Foundation. https://minigrid.farama.org/
+Farama Foundation. (n.d.). MiniGrid Documentation. Farama Foundation. https://minigrid.farama.org/
 
-[^halfcheetah]: Half Cheetah Environment. Gymnasium Documentation. Farama Foundation. https://gymnasium.farama.org/environments/mujoco/half_cheetah/  
+Farama Foundation. (n.d.). Half Cheetah Environment. Gymnasium Documentation. https://gymnasium.farama.org/environments/mujoco/half_cheetah/
+
+[^rl_wiki]: Wikipedia Contributors. (n.d.). Reinforcement Learning. Wikipedia. https://en.wikipedia.org/wiki/Reinforcement_learning
+
+[^minigrid]: Farama Foundation. (n.d.). MiniGrid Documentation. Farama Foundation. https://minigrid.farama.org/
+
+[^halfcheetah]: Farama Foundation. (n.d.). Half Cheetah Environment. Gymnasium Documentation. https://gymnasium.farama.org/environments/mujoco/half_cheetah/  
 
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
