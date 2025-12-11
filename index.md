@@ -38,7 +38,9 @@ The action-value function (Q-function) sharpens that by conditioning on the firs
 $Q^π(s, a) = E_π [ G_t | s_t = s, a_t = a ]$
 
 The Bellman equations are where the recursion magic happens. They break down long-term value into “reward now plus value later”:
+
 $V^π(s) = E_{a ~ π, s' ~ P} [ r(s, a) + γ V^π(s') ]$  
+
 $Q*(s, a) = E_{s' ~ P} [ r(s, a) + γ max_{a'} Q*(s', a') ]$
 
 For control (trying to find the best policy), you get the Bellman optimality equation:
@@ -56,9 +58,9 @@ What led to the creation of offline RL was that  many real-world systems generat
 
 The challenge is that once the agent is trained, its policy may choose actions that never appeared in the dataset.   
 
-# Transformers enter the chat: why sequence modeling for reinforcement learning
+# Transformers enter the chat
 
-
+Sequence modeling with transformers emerged as a natural fit for offline RL because offline datasets consist of trajectories—sequences of states, actions, and rewards. Unlike traditional value-based methods that suffer from distribution shift when learning value functions on offline data, sequence models directly learn conditional distributions `P(a_t | s_{1:t}, a_{1:t-1}, r_{1:t})` from the data distribution itself. Transformers leverage the same scaling principles that revolutionized NLP: larger models trained on massive offline datasets (millions of trajectories) capture long-range dependencies through self-attention, enabling them to model entire trajectory histories. The architecture also provides flexible conditioning mechanisms—Decision Transformer conditions on return-to-go tokens, allowing goal-conditioned behavior without retraining—and offers interpretability through attention patterns that reveal which trajectory segments the model focuses on when making decisions.
 
 # Decision Transformer
 
@@ -393,7 +395,11 @@ IEM: Distributed grid-like attention states each position attends broadly across
 ---
 
 # Limitations
-Transformers are memory and computation expensive, using transformers in RL is unlikely given that deploying these in robots or real time environments woudl make them slow.
+
+Transformers face fundamental performance limitations that constrain their effectiveness in RL. Autoregressive action generation causes exponential error accumulation—small mistakes at early timesteps compound catastrophically over long horizons, as bad actions lead to poor states that produce worse actions. Offline training creates distribution shift: models perform well on in-distribution trajectories but fail when errors lead to novel states, and unlike online methods, transformers cannot adapt after training. The architecture bypasses explicit value functions, losing principled credit assignment and exploration guarantees, while sparse reward settings provide insufficient learning signal for dense action prediction losses.
+
+Computational constraints severely limit real-time deployment. Autoregressive generation requires sequential forward passes (preventing parallelization), while self-attention's O(T²) complexity becomes prohibitively expensive for long trajectories. Beam search multiplies cost by beam width K, making high-quality planning impractical for real-time applications. Memory bottlenecks from attention matrices force trajectory truncation, and models require 10M-100M+ parameters, consuming substantial GPU memory and making edge deployment difficult. While attention patterns offer some interpretability, understanding internal decision dynamics remains challenging, limiting debugging and safety-critical applications. Training and inference costs create barriers to entry, restricting accessibility for resource-constrained practitioners.
+
 
 # Conclusion
 
