@@ -143,7 +143,8 @@ Traditional RL uses dynamic programming and bootstrapping, which can be unstable
 This isn't just a technical trick—it's a fundamental reframing. Instead of asking "What's the value of this state?" (value-based) or "What's the gradient of this policy?" (policy-based), sequence models ask "What action comes next in this trajectory pattern?" This question is easier to answer with supervised learning, more stable to optimize, and naturally handles the temporal structure of decision-making.
 
 The result: Transformers can match or exceed traditional RL methods on dense-reward tasks, while dramatically outperforming them on sparse-reward scenarios where credit assignment is hardest.
->>>>>>> 7b09667 (added few sections, need to polish more)
+
+<img src="images/paradigm_shift.png" alt="Paradigm Shift" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
 
 Sequence modeling with transformers emerged as a natural fit for offline RL because offline datasets consist of trajectories—sequences of states, actions, and rewards. Unlike traditional value-based methods that suffer from distribution shift when learning value functions on offline data, sequence models directly learn conditional distributions `P(a_t | s_{1:t}, a_{1:t-1}, r_{1:t})` from the data distribution itself. Transformers leverage the same scaling principles that revolutionized NLP: larger models trained on massive offline datasets (millions of trajectories) capture long-range dependencies through self-attention, enabling them to model entire trajectory histories. The architecture also provides flexible conditioning mechanisms—Decision Transformer conditions on return-to-go tokens, allowing goal-conditioned behavior without retraining—and offers interpretability through attention patterns that reveal which trajectory segments the model focuses on when making decisions.
 
@@ -691,17 +692,17 @@ The following table compares sequence modeling approaches (DT, TT, LEAP) against
 
 ## Inside the Black Box: Attention Analysis
 
-<div class="image-container">
-<figure>
-<img src="images/dt_last_layer_attention map.png" alt="DT Last Layer Attention Map" style="max-width: 30%; height: auto;">
+<div style="display: flex; justify-content: space-around; align-items: flex-start; flex-wrap: nowrap; gap: 10px; margin: 20px 0;">
+<figure style="flex: 1; margin: 0;">
+<img src="images/dt_last_layer_attention map.png" alt="DT Last Layer Attention Map" style="width: 100%; height: auto;">
 <figcaption><strong>DT:</strong> Vertical attention stripes confirm the model explicitly "checks" the desired future reward before committing to an action.</figcaption>
 </figure>
-<figure>
-<img src="images/tt_last_layer attention map.png" alt="TT Last Layer Attention Map" style="max-width: 30%; height: auto;">
+<figure style="flex: 1; margin: 0;">
+<img src="images/tt_last_layer attention map.png" alt="TT Last Layer Attention Map" style="width: 100%; height: auto;">
 <figcaption><strong>TT:</strong> Strong diagonal banding reveals it focuses on immediate past context over long term past.</figcaption>
 </figure>
-<figure>
-<img src="images/leap_baby_ai.png" alt="LEAP Baby AI" style="max-width: 30%; height: auto;">
+<figure style="flex: 1; margin: 0;">
+<img src="images/leap_baby_ai.png" alt="LEAP Baby AI" style="width: 100%; height: auto;">
 <figcaption><strong>IEM:</strong> Distributed grid-like attention states each position attends broadly across past AND future.</figcaption>
 </figure>
 </div>  
@@ -1107,7 +1108,7 @@ The future lies in **hybrid architectures** that combine sequence models' distri
 
 # Conclusion
 
-<div class="intro" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+<div class="intro">
 <p>The convergence of NLP and RL provides a unified framework where trajectories are treated as sentences, offering stability that traditional dynamic programming lacks. Through our analysis of Decision Transformer, Trajectory Transformer, and Iterative Energy Minimization, we've uncovered both the strengths and limitations of this paradigm shift.</p>
 </div>
 
