@@ -14,19 +14,21 @@ authors: ["Yashavika Singh", "Diksha Bagade"]
 
 # Abstract
 
-Reinforcement Learning (RL) has traditionally relied on value estimation and Bellman updates, which are often unstable and difficult to tune. This project explores a paradigm shift: treating RL as a Sequence Modeling problem. We analyze and replicate three Transformer-based approaches—Decision Transformer (DT), Trajectory Transformer (TT), and Iterative Energy Minimization (IEM)—to understand how language modeling architectures can solve decision-making tasks. Through systematic attention analysis, error propagation studies, and comparative evaluation, we provide novel insights into why sequence models work and when each approach is most appropriate. Our analysis reveals that sequence models fundamentally solve the credit assignment and sparse reward problems of traditional RL, while hybrid and energy-based extensions unlock capabilities like trajectory stitching and task composition that pure methods cannot achieve.
+Reinforcement Learning (RL) has traditionally relied on value estimation and Bellman updates, which are often unstable and difficult to tune. This project explores a paradigm shift: treating RL as a NLP Sequence Modeling problem. We analyze and replicate three Transformer-based approaches: Decision Transformer (DT), Trajectory Transformer (TT), and Iterative Energy Minimization (IEM), to understand how language modeling architectures can solve decision-making tasks. Through systematic attention analysis and comparative evaluation, we provide novel insights into why sequence models work and when each approach is most appropriate. Our analysis reveals that sequence models fundamentally solve the credit assignment and sparse reward problems of traditional RL, while hybrid and energy-based extensions unlock capabilities like trajectory stitching and task composition that pure methods cannot achieve.
 
 ---
 
-# Introduction
+# 1. Introduction
 
 <img src="RL.png" alt="Reinforcement Learning" style="max-width: 40%; height: auto; display: block; margin: 0 auto;">
 
-Reinforcement learning is the third paradigm in machine learning after supervised and unsupervised learning [^rl_wiki]. An agent wanders through an environment. At any moment it sits in some state $s$. It takes an action $a$. The world replies with a reward $r$ and shifts the agent to a new state $s'$.
+Reinforcement learning (RL) stands as the third paradigm in machine learning, distinct from supervised and unsupervised learning. An agent wanders an environment, takes actions, and receives rewards, attempting to maximize its cumulative score. Traditionally, this is solved by estimating a "Value Function"—a mathematical prediction of how good a specific state is.
 
-Anytime an agent moves through a sequence of states, takes actions, and receives rewards, you’ve got a trajectory.You can think of it as the agent’s diary: every state visited, every choice made, and every pat-on-the-head (or slap-on-the-wrist) from the environment.   
-$τ = (s₀, a₀, r₀, s₁, a₁, r₁, …, s_T) $
+However, this traditional approach suffers from the "Deadly Triad": the instability caused by combining function approximation (Deep Learning), bootstrapping (updating estimates based on other estimates), and off-policy training.
 
+Recently, a new question has emerged: **What if we treat a robot's trajectory exactly like a sentence?** If we feed a Transformer a sequence of `State, Action, Reward`, can it simply predict the optimal move, just like GPT predicts the next word? This post explores this intersection of NLP and Control Theory.
+
+<!-- $τ = (s₀, a₀, r₀, s₁, a₁, r₁, …, s_T) $
 
 A policy is a probability distribution over actions:  
 $π(a | s)$
@@ -47,33 +49,35 @@ $V^π(s) = E_{a ~ π, s' ~ P} [ r(s, a) + γ V^π(s') ]$
 $$Q*(s, a) = E_{s' ~ P} [ r(s, a) + γ max_{a'} Q*(s', a') ]$$
 
 For control (trying to find the best policy), you get the Bellman optimality equation:
-$Q*(s, a) = E_{s' ~ P} [ r(s, a) + γ max_{a'} Q*(s', a') ]$
+$$Q*(s, a) = E_{s' ~ P} [ r(s, a) + γ max_{a'} Q*(s', a') ]$$ -->
 
-
-
-Reinforcement learning has become the backbone in many technologies. It's used in self-driving cars, financial trades, recommendation systems, drones, robot manipulation, and more.
-
-## Offline Reinforcement Learning
+## 1.a Offline Reinforcement Learning
 
 Offline reinforcement learning, also known as batch reinforcement learning, is the branch of RL that learns entirely from a fixed dataset of past interactions—no new exploration, no real-time environment access, just logged trajectories.
 
-What led to the creation of offline RL was that many real-world systems generate mountains of logged data, yet letting an RL agent "explore" those systems would be unsafe, expensive, or outright impossible. Classic RL assumes the agent can poke the environment endlessly, but hospitals, factories, self-driving cars, financial markets, and even large-scale robotics labs don't offer unlimited retries. You often have terabytes of past trajectories sitting around, but no permission to interact again. Researchers wanted a way to turn those static logs into policies without risking exploration.
-
-The challenge is that once the agent is trained, its policy may choose actions that never appeared in the dataset. This "distribution shift" problem requires careful algorithmic design to prevent the agent from extrapolating too far beyond the training data.
+Many real-world systems generate mountains of logged data, yet letting an RL agent "explore" those systems would be unsafe, expensive, or impossible. Offline RL enables learning from static logs without risking exploration. The key challenge is distribution shift: once trained, the policy may choose actions that never appeared in the dataset, requiring careful algorithmic design to prevent extrapolation beyond the training data.
 
 ---
 
-# The Paradigm Shift
+# 2. The Paradigm Shift
 
-Traditional reinforcement learning faces several fundamental challenges that sequence modeling elegantly addresses. The key insight is simple yet profound: **trajectories are sequences, and sequences are what Transformers excel at modeling**.
+Traditional reinforcement learning faces several fundamental challenges that sequence modeling elegantly addresses. It relies on the Bellman Equation: $Q(s,a)$. This recursive loop is powerful but brittle. The key insight is simple yet profound: **trajectories are sequences, and sequences are what Transformers excel at modeling**.
 
-Instead of asking "What's the value of this state?" (value-based) or "What's the gradient of this policy?" (policy-based), sequence models ask "What action comes next in this trajectory pattern?" This question is easier to answer with supervised learning, more stable to optimize, and naturally handles the temporal structure of decision-making.
-
-The result: Transformers can match or exceed traditional RL methods on dense-reward tasks, while dramatically outperforming them on sparse-reward scenarios where credit assignment is hardest.
+$$ 
+Q(s,a) = r + \gamma \max Q(s', a')
+$$
+Where:
+* $r$: The reward you just got.  
+* $\gamma$ (gamma): The discount factor (caring about the future)  
+* $\max Q(s', a')$: The best possible score you can get from the next state.
 
 <img src="images/paradigm_shift.png" alt="Paradigm Shift" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
 
-Sequence modeling with transformers emerged as a natural fit for offline RL because offline datasets consist of trajectories—sequences of states, actions, and rewards. Unlike traditional value-based methods that suffer from distribution shift when learning value functions on offline data, sequence models directly learn conditional distributions `P(a_t | s_{1:t}, a_{1:t-1}, r_{1:t})` from the data distribution itself. Transformers leverage the same scaling principles that revolutionized NLP: larger models trained on massive offline datasets (millions of trajectories) capture long-range dependencies through self-attention, enabling them to model entire trajectory histories.
+Sequence Modeling (The Stream) treats RL as a supervised learning problem because offline datasets consist of trajectories—sequences of `states, actions, and rewards`. We simply model the joint distribution of trajectories $P(\tau)$ from expert data.
+
+$$ τ = (s₀, a₀, r₀, s₁, a₁, r₁, …, s_T) $$
+
+Unlike traditional value-based methods that suffer from distribution shift when learning value functions on offline data, sequence models directly learn conditional distributions `P(a_t | s_{1:t}, a_{1:t-1}, r_{1:t})` from the data distribution itself. Transformers leverage the same scaling principles that revolutionized NLP: larger models trained on massive offline datasets (millions of trajectories) to capture long-range dependencies.
 
 ---
 
@@ -81,26 +85,13 @@ Sequence modeling with transformers emerged as a natural fit for offline RL beca
 
 These three papers form a logical progression in applying Sequence Modeling to RL, each building upon and critiquing the previous approach:
 
-## How They Are Interconnected
-
-**The Foundation (DT)**: Decision Transformer establishes the baseline proof-of-concept. It shows that you don't need Bellman updates ($Q(s,a) \leftarrow r + \gamma \max Q(s',a')$) to do RL. You can simply copy the structure of successful trajectories using a standard GPT. It bridges the gap between "getting high reward" and "generating conditional text".
-
-**The Planner (TT)**: Trajectory Transformer accepts the premise of DT (RL is Sequence Modeling) but critiques the "blind" generation. It argues that for complex control, we need to actively plan into the future. It adapts the NLP concept of Beam Search to replace traditional control theory planners (like MPC), using the Transformer as the world model.
-
-**The Refiner (IEM/LEAP)**: Iterative Energy Minimization critiques the autoregressive nature of both DT and TT. It points out that generating action $t=5$ strictly after $t=4$ prevents the model from adjusting the plan based on future constraints (a "global" view). It connects the sequence modeling approach to Energy-Based Models (EBMs), allowing for non-autoregressive, iterative refinement of the plan.
-
-**Summary of Connection:**
-- **DT**: "Imitate the expert returns" (Past $\rightarrow$ Future)
-- **TT**: "Predict and search the best future" (Past $\rightarrow$ Future + Search)
-- **IEM**: "Refine the whole plan at once" (Global Optimization)
-
 ## Decision Transformer
 
 Decision Transformer (DT) establishes the baseline proof-of-concept that Reinforcement Learning can be treated as a Sequential modeling task. It was the first to demonstrate that a GPT-style autoregressive model, conditioned on desired returns, could match traditional RL performance without any value functions or policy gradients.
 
-DT shows that you don't need Bellman updates ($Q(s,a) \leftarrow r + \gamma \max Q(s',a')$) to do RL. You can simply copy the structure of successful trajectories using a standard GPT. It bridges the gap between "getting high reward" and "generating conditional text" by treating RL as a sequence modeling problem where trajectories are sequences of (state, action, reward) tuples.
+It bridges the gap between "getting high reward" and "generating conditional text" by treating RL as a sequence modeling problem where trajectories are sequences of (state, action, reward) tuples.
 
-## Architecture
+### Architecture
 
 **Architecture used:** Causal GPT (GPT-2 style Transformer)
 
@@ -111,7 +102,7 @@ The Decision Transformer uses a standard decoder-only Transformer architecture w
 
 <img src="images/decision_transformer_architecture.png" alt="Decision Transformer Architecture" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
 
-## Tokenization Scheme
+### Tokenization Scheme
 
 DT tokenizes trajectories into a sequence of alternating tokens:
 
@@ -124,31 +115,9 @@ Where:
 
 The key innovation is conditioning on **return-to-go** rather than past rewards. At inference time, you specify a target return (e.g., 3600 for HalfCheetah), and the model generates actions to achieve that return.
 
-## How Return-to-Go Works
+<hr class="section-divider">
 
-Return-to-go ($R̂_t$) represents the cumulative reward the agent should receive from the current timestep onward:
-
-$$R̂_t = r_t + r_{t+1} + ... + r_T$$
-
-During training, $R̂_t$ is computed from actual trajectory rewards. During inference, you set an initial $R̂_0$ (your goal) and the model predicts it should decay as rewards are "consumed":
-
-$$R̂_{t+1} = R̂_t - r_t$$
-
-This creates a natural conditioning mechanism: the model learns "when I want return X and I'm in state Y, take action Z."
-
-## Training Procedure
-
-DT is trained with standard language modeling loss:
-
-1. Sample trajectories from offline dataset
-2. Compute return-to-go for each timestep
-3. Tokenize into sequence: $[R̂, s, a, R̂, s, a, ...]$
-4. Predict next token (action) given previous tokens
-5. Minimize cross-entropy loss (for discrete actions) or MSE (for continuous actions)
-
-No Bellman updates, no policy gradients, no value functions—just supervised learning on trajectory sequences.
-
-## Inference
+### Inference
 
 At test time:
 1. Start with target return $R̂_0$ (e.g., 3600)
@@ -160,16 +129,11 @@ At test time:
 
 The model autoregressively generates one action at a time, with return-to-go providing the "goal signal" that conditions behavior.
 
-
-<hr class="section-divider">
-
 ## Trajectory Transformer
 
-Trajectory Transformer (TT) accepts the premise of DT (RL is Sequence Modeling) but critiques the "blind" autoregressive generation. DT generates actions one-by-one without looking ahead, which can lead to suboptimal long-horizon decisions. TT addresses this by actively planning into the future using **Beam Search**, a technique borrowed from machine translation.
+Trajectory Transformer (TT) accepts the premise of DT (RL is Sequence Modeling) but critiques the "blind" autoregressive generation. DT generates actions one-by-one without looking ahead, which can lead to suboptimal long-horizon decisions. It adapts the NLP concept of Beam Search to replace traditional control theory planners (like MPC), using the Transformer as the world model. Instead of greedily generating one action at a time, TT explores multiple trajectory hypotheses in parallel, selecting the best path based on predicted rewards.
 
-TT argues that for complex control, we need to actively plan into the future. It adapts the NLP concept of Beam Search to replace traditional control theory planners (like MPC), using the Transformer as the world model. Instead of greedily generating one action at a time, TT explores multiple trajectory hypotheses in parallel, selecting the best path based on predicted rewards.
-
-## Architecture
+### Architecture
 
 **Architecture used:** Causal GPT (similar to DT, but with different tokenization)
 
@@ -177,7 +141,7 @@ TT uses the same decoder-only Transformer architecture as DT, but with a crucial
 
 <img src="images/tt_architecture.png" alt="Trajectory Transformer Architecture" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
 
-## Tokenization Scheme
+### Tokenization Scheme
 
 TT tokenizes trajectories as:
 
@@ -185,7 +149,7 @@ $$[s_0, a_0, r_0, s_1, a_1, r_1, ..., s_T]$$
 
 Unlike DT, TT includes **rewards** in the sequence and doesn't use return-to-go. This allows the model to learn the full joint distribution $P(s_0, a_0, r_0, s_1, a_1, r_1, ...)$ over states, actions, and rewards.
 
-## Planning with Beam Search
+### Planning with Beam Search
 
 The key innovation is using **beam search** for action selection. Instead of greedily taking the most likely next action (like DT), TT:
 
@@ -200,7 +164,7 @@ The key innovation is using **beam search** for action selection. Instead of gre
 - $K=2,4,8$: Moderate exploration
 - $K=16,32$: Extensive exploration, better for long-horizon tasks
 
-## Why Beam Search Helps
+<!-- ## Why Beam Search Helps
 
 DT's autoregressive generation is "myopic"—it commits to actions without considering long-term consequences. If the model makes a small error early, it compounds over time (autoregressive compounding).
 
@@ -212,9 +176,9 @@ Beam search mitigates this by:
 This makes TT particularly effective for:
 - **Long-horizon tasks**: Where early mistakes compound
 - **Sparse rewards**: Where planning ahead is crucial
-- **Structured tasks**: Where multiple valid paths exist
+- **Structured tasks**: Where multiple valid paths exist -->
 
-## Training Procedure
+<!-- ## Training Procedure
 
 TT is trained similarly to DT:
 1. Sample trajectories from offline dataset
@@ -222,9 +186,9 @@ TT is trained similarly to DT:
 3. Predict next token (state, action, or reward) given previous tokens
 4. Minimize cross-entropy/MSE loss
 
-The difference is that TT learns to predict **rewards** as well, enabling it to score trajectory hypotheses during beam search.
+The difference is that TT learns to predict **rewards** as well, enabling it to score trajectory hypotheses during beam search. -->
 
-## Inference with Beam Search
+### Inference with Beam Search
 
 At test time:
 1. Start with observed state $s_0$
@@ -237,6 +201,29 @@ At test time:
 This planning process is more expensive than DT (requires multiple forward passes) but produces better long-horizon decisions.
 
 
+<!-- ## Training Procedure
+
+DT is trained with standard language modeling loss:
+
+1. Sample trajectories from offline dataset
+2. Compute return-to-go for each timestep
+3. Tokenize into sequence: $[R̂, s, a, R̂, s, a, ...]$
+4. Predict next token (action) given previous tokens
+5. Minimize cross-entropy loss (for discrete actions) or MSE (for continuous actions)
+
+No Bellman updates, no policy gradients, no value functions—just supervised learning on trajectory sequences. -->
+
+<!-- ## Inference
+
+At test time:
+1. Start with target return $R̂_0$ (e.g., 3600)
+2. Observe state $s_0$
+3. Model predicts action $a_0$ given $[R̂_0, s_0]$
+4. Execute action, receive reward $r_0$, observe $s_1$
+5. Update: $R̂_1 = R̂_0 - r_0$
+6. Repeat: predict $a_1$ given $[R̂_0, s_0, a_0, R̂_1, s_1]$
+
+The model autoregressively generates one action at a time, with return-to-go providing the "goal signal" that conditions behavior. -->
 
 <hr class="section-divider">
 
@@ -244,20 +231,20 @@ This planning process is more expensive than DT (requires multiple forward passe
 
 **Iterative Energy Minimization (IEM)**, also known as **LEAP** (Learning Energy-based models for Planning), takes a fundamentally different approach. Instead of autoregressive generation (DT) or beam search (TT), IEM uses a **BERT-like masked language model** to iteratively "denoise" and optimize a full plan at once, minimizing a learned energy function.
 
-IEM critiques the autoregressive nature of both DT and TT. It points out that generating action $t=5$ strictly after $t=4$ prevents the model from adjusting the plan based on future constraints (a "global" view). It connects the sequence modeling approach to Energy-Based Models (EBMs), allowing for non-autoregressive, iterative refinement of the plan. This enables the model to refine the entire trajectory simultaneously, seeing both past and future context.
+It connects the sequence modeling approach to Energy-Based Models (EBMs), allowing for non-autoregressive, iterative refinement of the plan. This enables the model to refine the entire trajectory simultaneously, seeing both past and future context.
 
 <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 20px; margin: 20px 0;">
   <img src="images/iem_architecture.png" alt="IEM Architecture" style="max-width: 45%; height: auto;">
   <img src="images/energy_minimization_iem.png" alt="Energy Minimization IEM" style="max-width: 45%; height: auto;">
 </div>
 
-## Architecture
+### Architecture
 
 **Architecture used:** BERT-like encoder (bidirectional attention)
 
 Unlike DT and TT which use causal (unidirectional) attention, IEM uses **bidirectional attention** like BERT. This allows each position to attend to both past and future tokens, enabling the model to refine the entire trajectory simultaneously.
 
-## Energy-Based Formulation
+### Energy-Based Formulation
 
 IEM formulates planning as **energy minimization**. The model learns an implicit energy function $E(τ)$ over trajectories $τ$, where lower energy corresponds to better trajectories. Planning becomes:
 
@@ -265,7 +252,7 @@ $$\tau^* = \arg\min_{\tau} E(\tau)$$
 
 The energy function is learned implicitly through masked language modeling: the model is trained to predict masked tokens, and trajectories that are easier to predict (lower reconstruction error) have lower energy.
 
-## Iterative Refinement Process
+### Iterative Refinement Process
 
 IEM doesn't generate trajectories autoregressively. Instead, it:
 
@@ -277,7 +264,7 @@ IEM doesn't generate trajectories autoregressively. Instead, it:
 
 This iterative "denoising" process gradually refines the trajectory toward lower energy (better plans).
 
-## Why Bidirectional Attention?
+### Why Bidirectional Attention?
 
 Autoregressive models (DT, TT) must commit to tokens sequentially, which can lead to suboptimal early decisions. IEM's bidirectional attention allows it to:
 
@@ -301,7 +288,7 @@ IEM is trained with masked language modeling:
 
 The model learns that trajectories with certain patterns (e.g., high rewards, valid state transitions) are easier to predict, implicitly learning a low-energy manifold.
 
-## Inference: Iterative Refinement
+### Inference: Iterative Refinement
 
 At test time:
 1. **Initialize** trajectory $τ^{(0)}$ (random or from a simple policy)
@@ -313,86 +300,20 @@ At test time:
 
 The number of iterations $N$ and masking strategy are hyperparameters that control the refinement process.
 
-## Custom Modifications in Our Implementation
 
-In our experiments, we modified IEM's forward function to create **custom attention masks** that control which parts of the trajectory the model can attend to during refinement. This allows fine-grained control over the planning process, enabling the model to focus on relevant parts of the trajectory while ignoring irrelevant context.
+## How They Are Interconnected
+
+**The Foundation (DT)**: Decision Transformer establishes the baseline proof-of-concept. It shows that you don't need Bellman updates ($Q(s,a) \leftarrow r + \gamma \max Q(s',a')$) to do RL. You can simply copy the structure of successful trajectories using a standard GPT. It bridges the gap between "getting high reward" and "generating conditional text".
+
+**The Planner (TT)**: Trajectory Transformer accepts the premise of DT (RL is Sequence Modeling) but critiques the "blind" generation. It argues that for complex control, we need to actively plan into the future. It adapts the NLP concept of Beam Search to replace traditional control theory planners (like MPC), using the Transformer as the world model.
+
+**The Refiner (IEM/LEAP)**: Iterative Energy Minimization critiques the autoregressive nature of both DT and TT. It points out that generating action $t=5$ strictly after $t=4$ prevents the model from adjusting the plan based on future constraints (a "global" view). It connects the sequence modeling approach to Energy-Based Models (EBMs), allowing for non-autoregressive, iterative refinement of the plan.
 
 ---
 
 # Datasets
 
-### HuggingFace Models Used
-
-This project compares two transformer-based reinforcement learning models, both pretrained on the HalfCheetah dataset and available on HuggingFace:
-
-### 1. Decision Transformer (DT)
-
-**Model Identifier:** `edbeeching/decision-transformer-gym-halfcheetah-medium`
-
-**Source:** HuggingFace Transformers Library  
-**Model Type:** Decision Transformer  
-**Architecture:** Transformer-based sequence model that conditions on return-to-go (R̂) to generate actions
-
-**Key Characteristics:**
-- Uses conditional generation based on desired return-to-go
-- Input format: `[R̂, s, a, R̂, s, a, ...]` (interleaved return-to-go, states, and actions)
-- Autoregressive action prediction
-- Fast inference (single forward pass per action)
-
-**Implementation Details:**
-- Loaded via `DecisionTransformerModel.from_pretrained()` from `transformers` library
-- Evaluated on `HalfCheetah-v4` environment from Gymnasium
-- Default target return: 3600
-
----
-
-### 2. Trajectory Transformer (TT)
-
-**Model Identifier:** `CarlCochet/trajectory-transformer-halfcheetah-medium-v2`
-
-**Source:** HuggingFace Transformers Library  
-**Model Type:** Trajectory Transformer  
-**Architecture:** Transformer-based model that learns joint distributions over full trajectories
-
-**Key Characteristics:**
-- Models complete trajectory distributions
-- Input format: `[s, a, r, s, a, r, ...]` (interleaved states, actions, and rewards)
-- Uses beam search for planning (explores multiple trajectory hypotheses)
-- Better for long-horizon planning tasks
-
-**Implementation Details:**
-- Loaded via `TrajectoryTransformerModel.from_pretrained()` from `transformers` library
-- Evaluated on `HalfCheetah-v4` environment from Gymnasium
-- Supports beam search with configurable beam widths (K = 1, 2, 4, 8, 16, 32)
-
----
-
-### 3. Iterative Energy Minimization (IEM) / LEAP
-
-**Source:** Original GitHub Repository  
-**Model Type:** Iterative Energy Minimization (LEAP)  
-**Architecture:** BERT-like masked language model that learns an implicit energy function over action trajectories
-
-**Key Characteristics:**
-- Uses a masked language model to capture energy functions over trajectories
-- Formulates planning as finding trajectories with minimal energy
-- Iteratively refines and "denoises" full plans at once
-- Better for tasks requiring structured planning and composability
-
-**Implementation Details:**
-- Implemented from the original GitHub repository (link: [GitHub Repository](https://github.com/hychen-naza/LEAP))
-- Modified the forward function to create custom attention masks for trajectory planning
-- Evaluated on **BabyAI** environment for instruction-following and compositional reasoning tasks
-
-**Custom Modifications:**
-- Edited the forward function to create attention masks that control which parts of the trajectory the model can attend to during the iterative refinement process
-- This allows for more fine-grained control over the planning and energy minimization process
-
----
-
 ## BabyAI Dataset
-
-### What is BabyAI?
 
 
 <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 20px; margin: 20px 0;">
@@ -483,7 +404,7 @@ HalfCheetah is widely used in offline RL research because:
 # New Experiments and Analysis
 
 <div class="callout callout-new">
-<strong>⚠️ NEW ANALYSIS:</strong> The following sections present <strong>original experimental analysis</strong> that goes beyond what was reported in the original papers. These insights were obtained through systematic attention analysis, error propagation studies, and comparative evaluation across all three architectures.
+<strong>NEW ANALYSIS:</strong> The following sections present <strong>original experimental analysis</strong> that goes beyond what was reported in the original papers. These insights were obtained through systematic attention analysis, error propagation studies, and comparative evaluation across all three architectures.
 </div>
 
 ## Performance Benchmarks
@@ -1068,6 +989,7 @@ Wikipedia Contributors. (n.d.). Reinforcement Learning. Wikipedia. https://en.wi
 Farama Foundation. (n.d.). MiniGrid Documentation. Farama Foundation. https://minigrid.farama.org/
 
 Farama Foundation. (n.d.). Half Cheetah Environment. Gymnasium Documentation. https://gymnasium.farama.org/environments/mujoco/half_cheetah/
+
 
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
