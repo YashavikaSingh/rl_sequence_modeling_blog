@@ -9,7 +9,7 @@ authors: ["Yashavika Singh", "Diksha Bagade"]
 # Transformers, take the Wheel! Sequence Modeling in Offline RL
 
 *By Yashavika Singh and Diksha Bagade*  
-\small{Github page link: https://yashavikasingh.github.io/rl_sequence_modeling_blog/}
+<font size="2">Github page link: https://yashavikasingh.github.io/rl_sequence_modeling_blog/</font>
 ---
 
 # 1. Abstract
