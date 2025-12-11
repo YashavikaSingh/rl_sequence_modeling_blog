@@ -12,13 +12,13 @@ authors: ["Yashavika Singh", "Diksha Bagade"]
 
 ---
 
-# Abstract
+# 1. Abstract
 
 Reinforcement Learning (RL) has traditionally relied on value estimation and Bellman updates, which are often unstable and difficult to tune. This project explores a paradigm shift: treating RL as a NLP Sequence Modeling problem. We analyze and replicate three Transformer-based approaches: Decision Transformer (DT), Trajectory Transformer (TT), and Iterative Energy Minimization (IEM), to understand how language modeling architectures can solve decision-making tasks. Through systematic attention analysis and comparative evaluation, we provide novel insights into why sequence models work and when each approach is most appropriate. Our analysis reveals that sequence models fundamentally solve the credit assignment and sparse reward problems of traditional RL, while hybrid and energy-based extensions unlock capabilities like trajectory stitching and task composition that pure methods cannot achieve.
 
 ---
 
-# 1. Introduction
+# 2. Introduction
 
 <img src="RL.png" alt="Reinforcement Learning" style="max-width: 40%; height: auto; display: block; margin: 0 auto;">
 
@@ -51,7 +51,7 @@ $$Q*(s, a) = E_{s' ~ P} [ r(s, a) + γ max_{a'} Q*(s', a') ]$$
 For control (trying to find the best policy), you get the Bellman optimality equation:
 $$Q*(s, a) = E_{s' ~ P} [ r(s, a) + γ max_{a'} Q*(s', a') ]$$ -->
 
-## 1.a Offline Reinforcement Learning
+# 3. Task at hand: Offline Reinforcement Learning
 
 Offline reinforcement learning, also known as batch reinforcement learning, is the branch of RL that learns entirely from a fixed dataset of past interactions—no new exploration, no real-time environment access, just logged trajectories.
 
@@ -59,7 +59,7 @@ Many real-world systems generate mountains of logged data, yet letting an RL age
 
 ---
 
-# 2. The Paradigm Shift
+# 3. The Paradigm Shift
 
 Traditional reinforcement learning faces several fundamental challenges that sequence modeling elegantly addresses. It relies on the Bellman Equation: $Q(s,a)$. This recursive loop is powerful but brittle. The key insight is simple yet profound: **trajectories are sequences, and sequences are what Transformers excel at modeling**.
 
@@ -81,11 +81,11 @@ Unlike traditional value-based methods that suffer from distribution shift when 
 
 ---
 
-# Papers Selected
+# 4. Papers Selected
 
 These three papers form a logical progression in applying Sequence Modeling to RL, each building upon and critiquing the previous approach:
 
-## Decision Transformer
+## 4.a Decision Transformer
 
 Decision Transformer (DT) establishes the baseline proof-of-concept that Reinforcement Learning can be treated as a Sequential modeling task. It was the first to demonstrate that a GPT-style autoregressive model, conditioned on desired returns, could match traditional RL performance without any value functions or policy gradients.
 
@@ -129,7 +129,7 @@ At test time:
 
 The model autoregressively generates one action at a time, with return-to-go providing the "goal signal" that conditions behavior.
 
-## Trajectory Transformer
+## 4.b Trajectory Transformer
 
 Trajectory Transformer (TT) accepts the premise of DT (RL is Sequence Modeling) but critiques the "blind" autoregressive generation. DT generates actions one-by-one without looking ahead, which can lead to suboptimal long-horizon decisions. It adapts the NLP concept of Beam Search to replace traditional control theory planners (like MPC), using the Transformer as the world model. Instead of greedily generating one action at a time, TT explores multiple trajectory hypotheses in parallel, selecting the best path based on predicted rewards.
 
@@ -227,7 +227,7 @@ The model autoregressively generates one action at a time, with return-to-go pro
 
 <hr class="section-divider">
 
-## Iterative Energy Minimization
+## 4.c Iterative Energy Minimization
 
 **Iterative Energy Minimization (IEM)**, also known as **LEAP** (Learning Energy-based models for Planning), takes a fundamentally different approach. Instead of autoregressive generation (DT) or beam search (TT), IEM uses a **BERT-like masked language model** to iteratively "denoise" and optimize a full plan at once, minimizing a learned energy function.
 
@@ -301,7 +301,7 @@ At test time:
 The number of iterations $N$ and masking strategy are hyperparameters that control the refinement process.
 
 
-## How They Are Interconnected
+## 4.d How They Are Interconnected
 
 **The Foundation (DT)**: Decision Transformer establishes the baseline proof-of-concept. It shows that you don't need Bellman updates ($Q(s,a) \leftarrow r + \gamma \max Q(s',a')$) to do RL. You can simply copy the structure of successful trajectories using a standard GPT. It bridges the gap between "getting high reward" and "generating conditional text".
 
@@ -311,9 +311,9 @@ The number of iterations $N$ and masking strategy are hyperparameters that contr
 
 ---
 
-# Datasets
+# 5. Datasets
 
-## BabyAI Dataset
+## 5.a BabyAI Dataset
 
 
 <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 20px; margin: 20px 0;">
@@ -341,7 +341,7 @@ The number of iterations $N$ and masking strategy are hyperparameters that contr
 
 ---
 
-## HalfCheetah Dataset
+## 5.b HalfCheetah Dataset
 
 ### What is HalfCheetah?
 
@@ -366,23 +366,6 @@ The number of iterations $N$ and masking strategy are hyperparameters that contr
 - Encourages the agent to run forward efficiently
 - Typical episode returns range from ~0 to ~6000+ depending on policy quality
 
-### Dataset Variants: "Medium" Quality
-
-The "medium" suffix in the model names (`halfcheetah-medium`) refers to the **D4RL dataset quality level** used for pretraining:
-
-**D4RL Dataset Quality Levels:**
-- **random**: Trajectories from a random policy (lowest quality)
-- **medium**: Trajectories from a partially trained policy (medium quality)
-- **medium-replay**: Mix of medium-quality trajectories and some from replay buffer
-- **medium-expert**: Mix of medium and expert-level trajectories
-- **expert**: Trajectories from a fully trained expert policy (highest quality)
-
-**"Medium" Dataset Characteristics:**
-- Contains trajectories from a policy that achieves approximately 50-60% of expert performance
-- Provides a good balance between diversity and quality
-- Commonly used for offline RL research as it represents realistic scenarios where you have suboptimal but useful demonstration data
-- Typically contains thousands of trajectories collected from the HalfCheetah-v4 environment
-
 ### Why HalfCheetah?
 
 HalfCheetah is widely used in offline RL research because:
@@ -395,19 +378,19 @@ HalfCheetah is widely used in offline RL research because:
 
 ---
 
-## HuggingFace Model Cards
+### HuggingFace Model Cards
   - DT: https://huggingface.co/edbeeching/decision-transformer-gym-halfcheetah-medium
   - TT: https://huggingface.co/CarlCochet/trajectory-transformer-halfcheetah-medium-v2
 
 ---
 
-# New Experiments and Analysis
+# 6. New Experiments and Analysis
 
 <div class="callout callout-new">
-<strong>NEW ANALYSIS:</strong> The following sections present <strong>original experimental analysis</strong> that goes beyond what was reported in the original papers. These insights were obtained through systematic attention analysis, error propagation studies, and comparative evaluation across all three architectures.
+The following sections present <strong>original experimental analysis</strong> that goes beyond what was reported in the original papers. These insights were obtained through systematic attention analysis, error propagation studies, and comparative evaluation across all three architectures.
 </div>
 
-## Performance Benchmarks
+## 6.a Performance Benchmarks
 
 <div class="callout callout-info">
 The following table compares sequence modeling approaches (DT, TT, LEAP) against traditional offline RL methods across different task types:
@@ -480,7 +463,7 @@ The following table compares sequence modeling approaches (DT, TT, LEAP) against
 <strong>Table:</strong> Performance comparison across offline RL methods. Sequence models match TD learning on dense rewards (locomotion), dominate on sparse rewards where TD fails, and hybrid LEAP achieves best overall performance on Atari.
 </blockquote>
 
-## Key Findings
+### Key Findings
 
 <div class="callout callout-success">
 <h4>1. Dense Rewards: Competitive Performance</h4>
@@ -508,11 +491,11 @@ The following table compares sequence modeling approaches (DT, TT, LEAP) against
 <p>Sequence models struggle on AntMaze (DT: 11.8, BC: 10.9) compared to TD-learning (CQL: 44.9, IQL: 63.2). AntMaze requires <strong>trajectory stitching</strong>—combining parts of different trajectories to reach goals. This is a fundamental limitation of sequence models: they learn to mimic trajectories but struggle to "stitch" together novel combinations.</p>
 </div>
 
-## Implications
+### Implications
 
 **Sequence models fundamentally solve the credit assignment and sparse reward problems of TD-learning**, while hybrid and energy-based extensions unlock capabilities like trajectory stitching and task composition that pure methods cannot achieve. However, they require significantly more compute than feedforward policies and struggle with tasks requiring trajectory stitching.
 
-## Attention Analysis
+## 6.b Attention Analysis
 
 <div style="display: flex; justify-content: space-around; align-items: flex-start; flex-wrap: nowrap; gap: 10px; margin: 20px 0;">
 <figure style="flex: 1; margin: 0;">
@@ -529,7 +512,7 @@ The following table compares sequence modeling approaches (DT, TT, LEAP) against
 </figure>
 </div>
 
-## Multilayer Attention Patterns
+### Multilayer Attention Patterns
 
 <div class="callout callout-info">
 <strong>What it shows:</strong> This visualization displays attention heatmaps averaged across all heads for multiple transformer layers, comparing Decision Transformer (DT) and Trajectory Transformer (TT) side-by-side.
@@ -576,7 +559,31 @@ The following table compares sequence modeling approaches (DT, TT, LEAP) against
 <strong>Why it matters:</strong> This layer-wise evolution reveals fundamental architectural differences. DT's shift from diagonal to vertical shows its increasing reliance on conditioning signals, while TT's hybrid pattern demonstrates its ability to maintain both local and global attention simultaneously. This dual focus in TT may explain its superior long-horizon performance—it preserves sequential context while building global trajectory understanding.
 </div>
 
-## Return Accumulation in Decision Transformer
+<div style="display: flex; justify-content: space-around; align-items: flex-start; flex-wrap: nowrap; gap: 10px; margin: 20px 0;">
+<figure style="flex: 1; margin: 0;">
+<img src="images/leap_attention_layer0_averaged.png" alt="DT Last Layer Attention Map" style="width: 70%; height: auto;">
+</figure>
+<figure style="flex: 1; margin: 0;">
+<img src="images/leap_attention_layer1_averaged.png" alt="TT Last Layer Attention Map" style="width: 70%; height: auto;">
+</figure>
+<figure style="flex: 1; margin: 0;">
+<img src="images/leap_attention_layer2_averaged.png" alt="LEAP Baby AI" style="width: 70%; height: auto;">
+</figure>
+</div>
+
+<div class="callout">
+<strong>LEAP Attention Evolution (TT):</strong>
+<ul>
+<li><strong>Pattern shifts from vertical anchoring to distributed grid across layers:</strong>: Early layers (Layer 0) show a strong vertical band where all query positions attend to a single key position (rightmost column, ~0.7 weight)—acting as a global anchor. Middle layers (Layer 1) redistribute attention to intermediate columns with dual vertical bands. Deep layers (Layer 2) develop a distributed, grid-like pattern where attention spreads across multiple positions with no single dominant column.</li>
+<li><strong>Why this happens</strong>: TT models full trajectories jointly, requiring both local sequential processing (diagonal) and global trajectory features (vertical). The combination allows TT to maintain causal dependencies while also attending to globally important information like rewards and critical states across all positions.</li>
+</ul>
+</div>
+
+<div class="callout callout-success">
+<strong>Why it matters:</strong> LEAP's bidirectional masked language model requires reasoning about the entire trajectory simultaneously for iterative energy minimization. Early layers establish global context by anchoring to goal/endpoint tokens, but deeper layers must attend broadly across both past and future positions to enable Gibbs sampling refinement at any timestep. This distributed attention is precisely what allows LEAP to correct errors anywhere in the sequence—unlike autoregressive models (DT/TT) that commit to early tokens and cannot revisit them.
+</div>
+
+### Return Accumulation in Decision Transformer
 
 <div class="image-container">
 <figure>
@@ -604,7 +611,7 @@ The following table compares sequence modeling approaches (DT, TT, LEAP) against
 <strong>Why it matters:</strong> DT uses R̂ as its primary conditioning signal—it tells the model "how much return do we still need?" If R̂ tracking is poor, the model receives incorrect guidance and may over- or under-shoot the target. This graph reveals whether DT maintains accurate internal state about progress toward goals, which is critical for goal-conditioned behavior.
 </div>
 
-## How Far Back Does It Look?
+### How Far Back Does It Look?
 
 <div class="image-container">
 <figure>
@@ -617,7 +624,7 @@ The following table compares sequence modeling approaches (DT, TT, LEAP) against
 This analysis reveals the temporal horizon of attention—how far back in the trajectory each model looks when making decisions. DT's vertical attention stripes suggest it primarily checks recent return-to-go values, while TT's diagonal patterns indicate it focuses on immediate past context. Understanding these patterns helps explain when each model is most effective.
 </div>
 
-## Attention Distribution Analysis
+### Attention Distribution Analysis
 
 <div class="image-container">
 <figure>
@@ -636,7 +643,7 @@ This analysis reveals the temporal horizon of attention—how far back in the tr
 
 **Comparison to TT:** TT exhibits more focused attention patterns, identifying and focusing on the most relevant past context. This leads to more stable predictions and explains why TT outperforms DT on long-horizon tasks.
 
-## Error Propagation Analysis
+### Error Propagation Analysis
 
 <div class="image-container">
 <figure>
@@ -655,7 +662,7 @@ This analysis reveals the temporal horizon of attention—how far back in the tr
 
 **Connection to Architecture:** Both DT and TT share autoregressive architectures that commit to tokens sequentially, making their attention patterns and error accumulation directly comparable. Both are evaluated on HalfCheetah-v4 for fair comparison.
 
-## Head Entropy Analysis
+### Head Entropy Analysis
 
 <div class="image-container">
 <figure>
@@ -686,7 +693,7 @@ This analysis reveals the temporal horizon of attention—how far back in the tr
 - **DT**: Maintains relatively high entropy across layers, consistent with its broad attention distribution
 - **TT**: Shows more variation, with some heads becoming highly specialized (low entropy) for planning-relevant tokens
 
-## Sparsity Analysis
+### Sparsity Analysis
 
 <div class="image-container">
 <figure>
