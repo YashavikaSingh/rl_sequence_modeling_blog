@@ -9,6 +9,7 @@ authors: ["Yashavika Singh", "Diksha Bagade"]
 # Transformers, take the Wheel! Sequence Modeling in Offline RL
 
 *By Yashavika Singh and Diksha Bagade*
+Github page link: https://yashavikasingh.github.io/rl_sequence_modeling_blog/
 
 ---
 
@@ -59,7 +60,7 @@ Many real-world systems generate mountains of logged data, yet letting an RL age
 
 ---
 
-# 3. The Paradigm Shift
+# 4. The Paradigm Shift
 
 Traditional reinforcement learning faces several fundamental challenges that sequence modeling elegantly addresses. It relies on the Bellman Equation: $Q(s,a)$. This recursive loop is powerful but brittle. The key insight is simple yet profound: **trajectories are sequences, and sequences are what Transformers excel at modeling**.
 
@@ -81,19 +82,17 @@ Unlike traditional value-based methods that suffer from distribution shift when 
 
 ---
 
-# 4. Papers Selected
+# 5. Papers Selected
 
 These three papers form a logical progression in applying Sequence Modeling to RL, each building upon and critiquing the previous approach:
 
-## 4.a Decision Transformer
+## 5.a Decision Transformer
 
 Decision Transformer (DT) establishes the baseline proof-of-concept that Reinforcement Learning can be treated as a Sequential modeling task. It was the first to demonstrate that a GPT-style autoregressive model, conditioned on desired returns, could match traditional RL performance without any value functions or policy gradients.
 
 It bridges the gap between "getting high reward" and "generating conditional text" by treating RL as a sequence modeling problem where trajectories are sequences of (state, action, reward) tuples.
 
-### Architecture
-
-**Architecture used:** Causal GPT (GPT-2 style Transformer)
+### Architecture: Causal GPT (GPT-2 style Transformer)
 
 The Decision Transformer uses a standard decoder-only Transformer architecture with causal (masked) self-attention. Each layer contains:
 - Multi-head self-attention (typically 8 heads)
@@ -129,13 +128,11 @@ At test time:
 
 The model autoregressively generates one action at a time, with return-to-go providing the "goal signal" that conditions behavior.
 
-## 4.b Trajectory Transformer
+## 5.b Trajectory Transformer
 
 Trajectory Transformer (TT) accepts the premise of DT (RL is Sequence Modeling) but critiques the "blind" autoregressive generation. DT generates actions one-by-one without looking ahead, which can lead to suboptimal long-horizon decisions. It adapts the NLP concept of Beam Search to replace traditional control theory planners (like MPC), using the Transformer as the world model. Instead of greedily generating one action at a time, TT explores multiple trajectory hypotheses in parallel, selecting the best path based on predicted rewards.
 
-### Architecture
-
-**Architecture used:** Causal GPT (similar to DT, but with different tokenization)
+### Architecture: Causal GPT 
 
 TT uses the same decoder-only Transformer architecture as DT, but with a crucial difference: it models the **joint distribution** over full trajectories rather than just predicting the next action.
 
@@ -227,7 +224,7 @@ The model autoregressively generates one action at a time, with return-to-go pro
 
 <hr class="section-divider">
 
-## 4.c Iterative Energy Minimization
+## 5.c Iterative Energy Minimization
 
 **Iterative Energy Minimization (IEM)**, also known as **LEAP** (Learning Energy-based models for Planning), takes a fundamentally different approach. Instead of autoregressive generation (DT) or beam search (TT), IEM uses a **BERT-like masked language model** to iteratively "denoise" and optimize a full plan at once, minimizing a learned energy function.
 
@@ -238,9 +235,7 @@ It connects the sequence modeling approach to Energy-Based Models (EBMs), allowi
   <img src="images/energy_minimization_iem.png" alt="Energy Minimization IEM" style="max-width: 45%; height: auto;">
 </div>
 
-### Architecture
-
-**Architecture used:** BERT-like encoder (bidirectional attention)
+### Architecture: BERT-like encoder (bidirectional attention)
 
 Unlike DT and TT which use causal (unidirectional) attention, IEM uses **bidirectional attention** like BERT. This allows each position to attend to both past and future tokens, enabling the model to refine the entire trajectory simultaneously.
 
@@ -277,7 +272,7 @@ This makes IEM particularly suited for:
 - **Structured planning**: Where the full plan structure matters more than individual steps
 - **Instruction following**: Where language instructions map to multi-step plans
 
-## Training Procedure
+### Training Procedure
 
 IEM is trained with masked language modeling:
 
@@ -301,7 +296,7 @@ At test time:
 The number of iterations $N$ and masking strategy are hyperparameters that control the refinement process.
 
 
-## 4.d How They Are Interconnected
+## 5.d How They Are Interconnected
 
 **The Foundation (DT)**: Decision Transformer establishes the baseline proof-of-concept. It shows that you don't need Bellman updates ($Q(s,a) \leftarrow r + \gamma \max Q(s',a')$) to do RL. You can simply copy the structure of successful trajectories using a standard GPT. It bridges the gap between "getting high reward" and "generating conditional text".
 
@@ -311,9 +306,9 @@ The number of iterations $N$ and masking strategy are hyperparameters that contr
 
 ---
 
-# 5. Datasets
+# 6. Datasets
 
-## 5.a BabyAI Dataset
+## 6.a BabyAI Dataset
 
 
 <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 20px; margin: 20px 0;">
@@ -331,24 +326,16 @@ The number of iterations $N$ and masking strategy are hyperparameters that contr
 - **Grid-world environment**: Simple 2D grid-based navigation with objects, colors, and spatial relationships
 - **Curriculum learning**: Provides a range of difficulty levels from simple navigation to complex compositional reasoning
 
-**Why BabyAI for IEM/LEAP?**
-- Tests the model's ability to plan and reason compositionally
-- Requires understanding of language instructions and spatial relationships
-- Challenges the iterative refinement process with multi-step tasks
-- Provides a controlled environment to study attention patterns and planning behavior
-
-
-
 ---
 
-## 5.b HalfCheetah Dataset
+## 6.b HalfCheetah Dataset
 
 ### What is HalfCheetah?
 
 **HalfCheetah** is a continuous control benchmark task from the MuJoCo physics simulator, part of the D4RL (Datasets for Deep Data-Driven Reinforcement Learning) benchmark suite [^halfcheetah]. It is one of the most commonly used environments for evaluating offline reinforcement learning algorithms.
 
 <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 20px; margin: 20px 0;">
-  <img src="images/halfcheetah.png" alt="HalfCheetah Environment" style="max-width: 45%; height: auto;">
+  <img src="images/halfcheetah.png" alt="HalfCheetah Environment" style="max-width: 46%; height: auto;">
   <img src="images/half_cheetah.gif" alt="HalfCheetah Animation" style="max-width: 45%; height: auto;">
 </div>
 
@@ -366,16 +353,6 @@ The number of iterations $N$ and masking strategy are hyperparameters that contr
 - Encourages the agent to run forward efficiently
 - Typical episode returns range from ~0 to ~6000+ depending on policy quality
 
-### Why HalfCheetah?
-
-HalfCheetah is widely used in offline RL research because:
-1. **Well-understood benchmark**: Established baseline with known performance metrics
-2. **Continuous control**: Tests ability to handle continuous state and action spaces
-3. **Dense rewards**: Provides learning signal throughout the episode
-4. **Moderate complexity**: Not too simple (like CartPole) but not too complex (like humanoid), making it ideal for method development
-5. **Standardized evaluation**: Part of D4RL, ensuring fair comparisons across papers
-
-
 ---
 
 ### HuggingFace Model Cards
@@ -384,13 +361,13 @@ HalfCheetah is widely used in offline RL research because:
 
 ---
 
-# 6. New Experiments and Analysis
+# 7. New Experiments and Analyses
 
 <div class="callout callout-new">
 The following sections present <strong>original experimental analysis</strong> that goes beyond what was reported in the original papers. These insights were obtained through systematic attention analysis, error propagation studies, and comparative evaluation across all three architectures.
 </div>
 
-## 6.a Performance Benchmarks
+## 7.a Performance Benchmarks
 
 <div class="callout callout-info">
 The following table compares sequence modeling approaches (DT, TT, LEAP) against traditional offline RL methods across different task types:
