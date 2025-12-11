@@ -508,13 +508,11 @@ The following table compares sequence modeling approaches (DT, TT, LEAP) against
 </figure>
 </div>
 
-<div class="callout">
 <strong>For Decision Transformer (DT):</strong>
 <ul>
 <li><strong>Pattern becomes more vertical across layers</strong>: As you progress from early to later layers, DT's attention develops increasingly strong vertical bands. Early layers show more diagonal patterns (local context), but later layers shift toward vertical patterns where certain key positions (return-to-go tokens, critical states) receive attention across all query positions.</li>
 <li><strong>Why this happens</strong>: DT's architecture relies heavily on the return-to-go conditioning signal. Deeper layers increasingly integrate this global conditioning information, causing vertical attention patterns to emerge as the model prioritizes goal-relevant tokens across the entire sequence.</li>
 </ul>
-</div>
 
 <div class="image-container">
 <figure>
@@ -523,13 +521,11 @@ The following table compares sequence modeling approaches (DT, TT, LEAP) against
 </figure>
 </div>
 
-<div class="callout">
 <strong>For Trajectory Transformer (TT):</strong>
 <ul>
 <li><strong>Diagonal bands persist, vertical bands emerge</strong>: TT maintains diagonal attention patterns (sequential dependencies) throughout all layers, but also develops vertical bands in later layers. Unlike DT, TT doesn't replace diagonal patterns with vertical ones—instead, it adds vertical patterns while preserving diagonal structure.</li>
 <li><strong>Why this happens</strong>: TT models full trajectories jointly, requiring both local sequential processing (diagonal) and global trajectory features (vertical). The combination allows TT to maintain causal dependencies while also attending to globally important information like rewards and critical states across all positions.</li>
 </ul>
-</div>
 
 <div style="display: flex; justify-content: space-around; align-items: flex-start; flex-wrap: nowrap; gap: 10px; margin: 20px 0;">
 <figure style="flex: 1; margin: 0;">
@@ -543,13 +539,11 @@ The following table compares sequence modeling approaches (DT, TT, LEAP) against
 </figure>
 </div>
 
-<div class="callout">
 <strong>LEAP Attention Evolution (TT):</strong>
 <ul>
 <li><strong>Pattern shifts from vertical anchoring to distributed grid across layers:</strong>: Early layers (Layer 0) show a strong vertical band where all query positions attend to a single key position (rightmost column, ~0.7 weight)—acting as a global anchor. Middle layers (Layer 1) redistribute attention to intermediate columns with dual vertical bands. Deep layers (Layer 2) develop a distributed, grid-like pattern where attention spreads across multiple positions with no single dominant column.</li>
 <li><strong>Why this happens</strong>: LEAP's bidirectional masked language model requires reasoning about the entire trajectory simultaneously for iterative energy minimization. Early layers establish global context by anchoring to goal/endpoint tokens, but deeper layers must attend broadly across both past and future positions to enable Gibbs sampling refinement at any timestep. This distributed attention is precisely what allows LEAP to correct errors anywhere in the sequence—unlike autoregressive models (DT/TT) that commit to early tokens and cannot revisit them.</li>
 </ul>
-</div>
 
 ## 6.c Addition Analyses
 
@@ -564,7 +558,6 @@ The following table compares sequence modeling approaches (DT, TT, LEAP) against
 </figure>
 </div>
 
-<div class="callout">
 <strong>Axes:</strong>
 <ul>
 <li>X-axis: Episode timestep (progress through the episode)</li>
