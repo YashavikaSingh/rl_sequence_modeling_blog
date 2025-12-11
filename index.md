@@ -461,7 +461,6 @@ The following table compares sequence modeling approaches (DT, TT, LEAP) against
 <h4>3. Atari: Energy-Based Methods Excel</h4>
 <p>LEAP (IEM) achieves the best performance on Atari (132.6), outperforming both DT (97.9) and traditional methods. This suggests that <strong>iterative refinement</strong> and <strong>bidirectional planning</strong> are particularly effective for complex, structured tasks like Atari games.</p>
 </div>
-</div>
 
 ## 7.b Attention Analysis
 
@@ -480,7 +479,7 @@ The following table compares sequence modeling approaches (DT, TT, LEAP) against
 </figure>
 </div>
 
-<strong>This visualization displays attention heatmaps averaged across all heads for multiple transformer layers.
+<strong>This visualization displays attention heatmaps averaged across all heads for multiple transformer layers.</strong>
 
 ### Multilayer Attention Patterns
 
@@ -514,17 +513,17 @@ The following table compares sequence modeling approaches (DT, TT, LEAP) against
 
 <div style="display: flex; justify-content: space-around; align-items: flex-start; flex-wrap: nowrap; gap: 10px; margin: 20px 0;">
 <figure style="flex: 1; margin: 0;">
-<img src="images/leap_attention_layer0_averaged.png" alt="DT Last Layer Attention Map" style="width: 70%; height: auto;">
+<img src="images/leap_attention_layer0_averaged.png" alt="LEAP Layer 0 Attention Map" style="width: 70%; height: auto;">
 </figure>
 <figure style="flex: 1; margin: 0;">
-<img src="images/leap_attention_layer1_averaged.png" alt="TT Last Layer Attention Map" style="width: 70%; height: auto;">
+<img src="images/leap_attention_layer1_averaged.png" alt="LEAP Layer 1 Attention Map" style="width: 70%; height: auto;">
 </figure>
 <figure style="flex: 1; margin: 0;">
-<img src="images/leap_attention_layer2_averaged.png" alt="LEAP Baby AI" style="width: 70%; height: auto;">
+<img src="images/leap_attention_layer2_averaged.png" alt="LEAP Layer 2 Attention Map" style="width: 70%; height: auto;">
 </figure>
 </div>
 
-<strong>LEAP Attention Evolution (TT):</strong>
+<strong>LEAP Attention Evolution:</strong>
 <ul>
 <li><strong>Pattern shifts from vertical anchoring to distributed grid across layers:</strong>: Early layers (Layer 0) show a strong vertical band where all query positions attend to a single key position (rightmost column, ~0.7 weight)—acting as a global anchor. Middle layers (Layer 1) redistribute attention to intermediate columns with dual vertical bands. Deep layers (Layer 2) develop a distributed, grid-like pattern where attention spreads across multiple positions with no single dominant column.</li>
 <li><strong>Why this happens</strong>: LEAP's bidirectional masked language model requires reasoning about the entire trajectory simultaneously for iterative energy minimization. Early layers establish global context by anchoring to goal/endpoint tokens, but deeper layers must attend broadly across both past and future positions to enable Gibbs sampling refinement at any timestep. This distributed attention is precisely what allows LEAP to correct errors anywhere in the sequence—unlike autoregressive models (DT/TT) that commit to early tokens and cannot revisit them.</li>
@@ -598,8 +597,7 @@ This analysis reveals the temporal horizon of attention—how far back in the tr
 
 **Axes:** X-axis: attention head indices (H0, H1, H2...). Y-axis: entropy values. Multi-layer version shows separate subplots per layer.
   
-Lower entropy heads are specialized—focus on specific patterns (state transitions, rewards, etc.). Higher entropy heads are generalists—distribute attention broadly. Specialization enables simultaneous attention to multiple trajectory aspects (local, global, rewards) rather than redundant computation. This explains TT's performance: specialized heads capture richer structure than DT's single-head attention. Specialized heads improve interpretability and efficiency.
- Shows more variation, with some heads becoming highly specialized (low entropy) for planning-relevant tokens
+Lower entropy heads are specialized—focus on specific patterns (state transitions, rewards, etc.). Higher entropy heads are generalists—distribute attention broadly. Specialization enables simultaneous attention to multiple trajectory aspects (local, global, rewards) rather than redundant computation. This explains TT's performance: specialized heads capture richer structure than DT's single-head attention. Specialized heads improve interpretability and efficiency. TT shows more variation, with some heads becoming highly specialized (low entropy) for planning-relevant tokens.
 
 ### Decision Transformers vs Trajectory Transformers
 Decision Transformer and Trajectory Transformer share autoregressive architectures that commit to tokens sequentially—making their attention patterns and error accumulation directly comparable—while LEAP's bidirectional masked language model and iterative Gibbs sampling represent a fundamentally different inference paradigm that cannot be evaluated on the same axes.
