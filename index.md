@@ -14,7 +14,7 @@ authors: ["Yashavika Singh", "Diksha Bagade"]
 
 # 1. Abstract
 
-Reinforcement Learning (RL) has traditionally relied on value estimation and Bellman updates, which are often unstable and difficult to tune. This project explores a paradigm shift: treating RL as a NLP Sequence Modeling problem. We analyze and replicate three Transformer-based approaches: Decision Transformer (DT), Trajectory Transformer (TT), and Iterative Energy Minimization (IEM), to understand how language modeling architectures can solve decision-making tasks. Through systematic attention analysis and comparative evaluation, we provide novel insights into why sequence models work and when each approach is most appropriate. Our analysis reveals that sequence models fundamentally solve the credit assignment and sparse reward problems of traditional RL, while hybrid and energy-based extensions unlock capabilities like trajectory stitching and task composition that pure methods cannot achieve.
+Reinforcement Learning (RL) has traditionally relied on value estimation and Bellman updates, which are often unstable and difficult to tune. This project explores a paradigm shift: treating RL as a NLP Sequence Modeling problem. We analyze and replicate three Transformer-based approaches: **Decision Transformer (DT), Trajectory Transformer (TT), and Iterative Energy Minimization (IEM)**, to understand how language modeling architectures can solve decision-making tasks. Through systematic attention analysis and comparative evaluation, we provide novel insights into why sequence models work and when each approach is most appropriate. Our analysis reveals that sequence models fundamentally solve the credit assignment and sparse reward problems of traditional RL, while hybrid and energy-based extensions unlock capabilities like trajectory stitching and task composition that pure methods cannot achieve.
 
 ---
 
@@ -100,7 +100,7 @@ The Decision Transformer uses a standard decoder-only Transformer architecture w
 
 <img src="images/decision_transformer_architecture.png" alt="Decision Transformer Architecture" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
 
-### Tokenization Scheme
+<!-- ### Tokenization Scheme
 
 DT tokenizes trajectories into a sequence of alternating tokens:
 
@@ -125,7 +125,7 @@ At test time:
 5. Update: $R̂_1 = R̂_0 - r_0$
 6. Repeat: predict $a_1$ given $[R̂_0, s_0, a_0, R̂_1, s_1]$
 
-The model autoregressively generates one action at a time, with return-to-go providing the "goal signal" that conditions behavior.
+The model autoregressively generates one action at a time, with return-to-go providing the "goal signal" that conditions behavior. -->
 
 ## 5.b Trajectory Transformer
 
@@ -137,15 +137,15 @@ TT uses the same decoder-only Transformer architecture as DT, but with a crucial
 
 <img src="images/tt_architecture.png" alt="Trajectory Transformer Architecture" style="max-width: 70%; height: auto; display: block; margin: 20px auto;">
 
-### Tokenization Scheme
+<!-- ### Tokenization Scheme
 
 TT tokenizes trajectories as:
 
 $$[s_0, a_0, r_0, s_1, a_1, r_1, ..., s_T]$$
 
-Unlike DT, TT includes **rewards** in the sequence and doesn't use return-to-go. This allows the model to learn the full joint distribution $P(s_0, a_0, r_0, s_1, a_1, r_1, ...)$ over states, actions, and rewards.
+Unlike DT, TT includes **rewards** in the sequence and doesn't use return-to-go. This allows the model to learn the full joint distribution $P(s_0, a_0, r_0, s_1, a_1, r_1, ...)$ over states, actions, and rewards. -->
 
-### Planning with Beam Search
+<!-- ### Planning with Beam Search
 
 The key innovation is using **beam search** for action selection. Instead of greedily taking the most likely next action (like DT), TT:
 
@@ -158,7 +158,7 @@ The key innovation is using **beam search** for action selection. Instead of gre
 **Beam width $K$** controls the exploration-exploitation trade-off:
 - $K=1$: Greedy decoding (similar to DT)
 - $K=2,4,8$: Moderate exploration
-- $K=16,32$: Extensive exploration, better for long-horizon tasks
+- $K=16,32$: Extensive exploration, better for long-horizon tasks -->
 
 <!-- ## Why Beam Search Helps
 
@@ -184,7 +184,7 @@ TT is trained similarly to DT:
 
 The difference is that TT learns to predict **rewards** as well, enabling it to score trajectory hypotheses during beam search. -->
 
-### Inference with Beam Search
+<!-- ### Inference with Beam Search
 
 At test time:
 1. Start with observed state $s_0$
@@ -194,7 +194,7 @@ At test time:
 5. Keep top-K trajectories, expand each to next timestep
 6. Repeat until episode end, then execute the best trajectory
 
-This planning process is more expensive than DT (requires multiple forward passes) but produces better long-horizon decisions.
+This planning process is more expensive than DT (requires multiple forward passes) but produces better long-horizon decisions. -->
 
 
 <!-- ## Training Procedure
@@ -257,7 +257,7 @@ IEM doesn't generate trajectories autoregressively. Instead, it:
 5. **Repeats** steps 2-4 for multiple iterations
 
 This iterative "denoising" process gradually refines the trajectory toward lower energy (better plans).
-
+<!-- 
 ### Why Bidirectional Attention?
 
 Autoregressive models (DT, TT) must commit to tokens sequentially, which can lead to suboptimal early decisions. IEM's bidirectional attention allows it to:
@@ -269,9 +269,9 @@ Autoregressive models (DT, TT) must commit to tokens sequentially, which can lea
 This makes IEM particularly suited for:
 - **Compositional tasks**: Where multiple sub-tasks must be combined (e.g., "go to red ball, then pick it up")
 - **Structured planning**: Where the full plan structure matters more than individual steps
-- **Instruction following**: Where language instructions map to multi-step plans
+- **Instruction following**: Where language instructions map to multi-step plans -->
 
-### Training Procedure
+<!-- ### Training Procedure
 
 IEM is trained with masked language modeling:
 
@@ -292,7 +292,7 @@ At test time:
    - **Update**: $τ^{(i)} = \text{update}(τ^{(i-1)}, \text{predictions})$
 3. **Execute** the final refined trajectory $τ^{(N)}$
 
-The number of iterations $N$ and masking strategy are hyperparameters that control the refinement process.
+The number of iterations $N$ and masking strategy are hyperparameters that control the refinement process. -->
 
 
 ## 5.d How They Are Interconnected
@@ -462,16 +462,7 @@ The following table compares sequence modeling approaches (DT, TT, LEAP) against
 <p>LEAP (IEM) achieves the best performance on Atari (132.6), outperforming both DT (97.9) and traditional methods. This suggests that <strong>iterative refinement</strong> and <strong>bidirectional planning</strong> are particularly effective for complex, structured tasks like Atari games.</p>
 </div>
 
-<div class="callout callout-warning">
-<h4>4. AntMaze: Limitations Revealed</h4>
-<p>Sequence models struggle on AntMaze (DT: 11.8, BC: 10.9) compared to TD-learning (CQL: 44.9, IQL: 63.2). AntMaze requires <strong>trajectory stitching</strong>—combining parts of different trajectories to reach goals. This is a fundamental limitation of sequence models: they learn to mimic trajectories but struggle to "stitch" together novel combinations.</p>
-</div>
-
-### Implications
-
-**Sequence models fundamentally solve the credit assignment and sparse reward problems of TD-learning**, while hybrid and energy-based extensions unlock capabilities like trajectory stitching and task composition that pure methods cannot achieve. However, they require significantly more compute than feedforward policies and struggle with tasks requiring trajectory stitching.
-
-## 6.b Attention Analysis
+## 7.b Attention Analysis
 
 <div style="display: flex; justify-content: space-around; align-items: flex-start; flex-wrap: nowrap; gap: 10px; margin: 20px 0;">
 <figure style="flex: 1; margin: 0;">
@@ -487,19 +478,10 @@ The following table compares sequence modeling approaches (DT, TT, LEAP) against
 <figcaption><strong>IEM:</strong> Distributed grid-like attention states each position attends broadly across past AND future.</figcaption>
 </figure>
 </div>
+<div class="callout callout-info">
+<strong>This visualization displays attention heatmaps averaged across all heads for multiple transformer layers.
 
 ### Multilayer Attention Patterns
-
-<div class="callout callout-info">
-<strong>What it shows:</strong> This visualization displays attention heatmaps averaged across all heads for multiple transformer layers, comparing Decision Transformer (DT) and Trajectory Transformer (TT) side-by-side.
-
-<strong>Axes:</strong>
-<ul>
-<li>X-axis: Key position (which tokens the model can attend to)</li>
-<li>Y-axis: Query position (which tokens are making the query)</li>
-<li>Color intensity: Attention weight strength (brighter = stronger attention)</li>
-</ul>
-</div>
 
 <div class="image-container">
 <figure>
@@ -514,6 +496,7 @@ The following table compares sequence modeling approaches (DT, TT, LEAP) against
 <li><strong>Why this happens</strong>: DT's architecture relies heavily on the return-to-go conditioning signal. Deeper layers increasingly integrate this global conditioning information, causing vertical attention patterns to emerge as the model prioritizes goal-relevant tokens across the entire sequence.</li>
 </ul>
 
+
 <div class="image-container">
 <figure>
 <img src="images/tt_multilayer_attention.png" alt="TT Multilayer Attention" style="max-width: 100%; height: auto;">
@@ -526,6 +509,7 @@ The following table compares sequence modeling approaches (DT, TT, LEAP) against
 <li><strong>Diagonal bands persist, vertical bands emerge</strong>: TT maintains diagonal attention patterns (sequential dependencies) throughout all layers, but also develops vertical bands in later layers. Unlike DT, TT doesn't replace diagonal patterns with vertical ones—instead, it adds vertical patterns while preserving diagonal structure.</li>
 <li><strong>Why this happens</strong>: TT models full trajectories jointly, requiring both local sequential processing (diagonal) and global trajectory features (vertical). The combination allows TT to maintain causal dependencies while also attending to globally important information like rewards and critical states across all positions.</li>
 </ul>
+
 
 <div style="display: flex; justify-content: space-around; align-items: flex-start; flex-wrap: nowrap; gap: 10px; margin: 20px 0;">
 <figure style="flex: 1; margin: 0;">
@@ -545,7 +529,7 @@ The following table compares sequence modeling approaches (DT, TT, LEAP) against
 <li><strong>Why this happens</strong>: LEAP's bidirectional masked language model requires reasoning about the entire trajectory simultaneously for iterative energy minimization. Early layers establish global context by anchoring to goal/endpoint tokens, but deeper layers must attend broadly across both past and future positions to enable Gibbs sampling refinement at any timestep. This distributed attention is precisely what allows LEAP to correct errors anywhere in the sequence—unlike autoregressive models (DT/TT) that commit to early tokens and cannot revisit them.</li>
 </ul>
 
-## 6.c Addition Analyses
+## 7.c Addition Analyses
 
 ### Decision Transformers:
 
@@ -583,13 +567,9 @@ This plot tracks how the return-to-go (R̂) value changes throughout an episode.
 </figure>
 </div>
 
-**Axes:** X-axis: episode timestep. Y-axis: attention allocation (0-1.0, fraction per category). Stacked areas show distribution across time windows, always summing to 1.0.
-
-**How it was calculated:** We extract attention weights from the last query position (action prediction) across episode snapshots, partitioning allocation into four categories: Return-to-Go token, recent timesteps (last 25%), middle (25-75%), and old timesteps (first 25%). Normalized weights sum to 1.0.
-
-**What it means:** DT heavily weights RTG early (conditioning signal), then shifts to recent timesteps. It uses RTG as initial guide but increasingly relies on recent history. Declining attention to old timesteps explains DT's long-horizon struggles—it lacks long-term memory.
-
-**Why this insight is novel:** Unlike spatial heatmaps, this reveals temporal dynamics—how attention shifts during episodes. It quantifies RTG token importance versus historical context, showing whether DT relies more on desired returns or past experience.
+**Axes:** X-axis: episode timestep. Y-axis: attention allocation (0-1.0, fraction per category). Stacked areas show distribution across time windows, always summing to 1.0.  
+  
+DT heavily weights RTG early (conditioning signal), then shifts to recent timesteps. It uses RTG as initial guide but increasingly relies on recent history. Declining attention to old timesteps explains DT's long-horizon struggles—it lacks long-term memory.
 
 ### Trajectory Transformers: 
 
@@ -615,27 +595,10 @@ This analysis reveals the temporal horizon of attention—how far back in the tr
 </figure>
 </div>
 
-**How it was calculated:** We compute Shannon entropy `H = -Σ p_i × log(p_i)` for each attention head's distribution (normalized attention weights). Lower entropy = focused/specialized attention (few positions). Higher entropy = uniform attention (broad distribution). Computed across all heads and layers.
-
 **Axes:** X-axis: attention head indices (H0, H1, H2...). Y-axis: entropy values. Multi-layer version shows separate subplots per layer.
-
-**Why this insight is novel:** Head specialization analysis via entropy is unexplored in transformer RL. Reveals whether heads learn distinct patterns (specialization) or similar ones (redundancy), informing architecture efficiency.
-
-**What it means:** Lower entropy heads are specialized—focus on specific patterns (state transitions, rewards, etc.). Higher entropy heads are generalists—distribute attention broadly. Specialization enables simultaneous attention to multiple trajectory aspects (local, global, rewards) rather than redundant computation. This explains TT's performance: specialized heads capture richer structure than DT's single-head attention. Specialized heads improve interpretability and efficiency.
-
-
-**What This Shows:** **Entropy** of attention distributions across all layers and heads. Entropy measures the "diversity" of attention—high entropy means attention is spread evenly across tokens, low entropy means attention is focused on a few tokens.
-
-**Key Finding:** The entropy patterns reveal how attention diversity changes across layers:
-- **Early layers**: Lower entropy (more focused attention) as models identify key tokens
-- **Middle layers**: Higher entropy (more distributed attention) as models integrate information
-- **Late layers**: Varies by model—DT maintains higher entropy, TT becomes more focused
-
-**Why It Matters:** Entropy reveals the "specialization" of attention heads. Low-entropy heads are specialized for specific patterns (e.g., "always attend to return-to-go tokens"), while high-entropy heads integrate diverse information. The layer-wise patterns show how information flows through the model.
-
-**Model-Specific Insights:**
-- **DT**: Maintains relatively high entropy across layers, consistent with its broad attention distribution
-- **TT**: Shows more variation, with some heads becoming highly specialized (low entropy) for planning-relevant tokens
+  
+Lower entropy heads are specialized—focus on specific patterns (state transitions, rewards, etc.). Higher entropy heads are generalists—distribute attention broadly. Specialization enables simultaneous attention to multiple trajectory aspects (local, global, rewards) rather than redundant computation. This explains TT's performance: specialized heads capture richer structure than DT's single-head attention. Specialized heads improve interpretability and efficiency.
+ Shows more variation, with some heads becoming highly specialized (low entropy) for planning-relevant tokens
 
 ### Decision Transformers vs Trajectory Transformers
 Decision Transformer and Trajectory Transformer share autoregressive architectures that commit to tokens sequentially—making their attention patterns and error accumulation directly comparable—while LEAP's bidirectional masked language model and iterative Gibbs sampling represent a fundamentally different inference paradigm that cannot be evaluated on the same axes.
@@ -652,11 +615,7 @@ Our replication focused on the D4RL locomotion benchmark where DT and TT have pu
 
 **Axes:** X-axis: timestep. Y-axis: cumulative error (log scale, necessary to visualize exponential vs constant growth together).
 
-**How it was calculated:** We model error accumulation over time. DT: exponential growth `error = 0.01 × (1.05^timestep)` (autoregressive compounding). TT: roughly constant `error = 0.01 + noise` (beam search mitigates). Uses real measurements when available, otherwise theoretical models.
-
-**Why this insight is novel:** Applies NLP error propagation theory to RL transformers. The exponential vs constant pattern explains why autoregressive models fail on long horizons—small early errors cascade into catastrophic failures.
-
-**What it means:** DT's exponential growth means errors compound orders of magnitude by timestep 100—early mistakes cause later failures. TT's beam search maintains multiple hypotheses, recovering from errors via alternative paths. This explains the long-horizon performance gap: DT becomes unreliable, TT remains robust.
+DT's exponential growth means errors compound orders of magnitude by timestep 100—early mistakes cause later failures. TT's beam search maintains multiple hypotheses, recovering from errors via alternative paths. This explains the long-horizon performance gap: DT becomes unreliable, TT remains robust.
 
 ### Sparsity Analysis
 
@@ -668,12 +627,8 @@ Our replication focused on the D4RL locomotion benchmark where DT and TT have pu
 </div>
 
 **Axes:** X-axis: three metric categories. Y-axis: metric values. Side-by-side bars compare DT (blue) and TT (orange).
-
-**How it was calculated:** We extract attention matrices from both models (DT from episode snapshots, TT from first layer) and compute three metrics: (1) Mean Attention (average weight), (2) Attention Variance (spread measure), (3) Sparsity (fraction of weights < 0.01 threshold).
-
-**Why this insight is novel:** This quantitative comparison provides objective measures beyond visual heatmaps. Sparsity analysis is rarely done in transformer RL but reveals critical attention focus differences.
-
-**What it means:** Higher sparsity = more focused attention (fewer positions attended). Lower variance = more uniform distribution. These differences reflect architectural choices: DT's autoregressive RTG conditioning vs TT's joint trajectory modeling. Higher sparsity may improve interpretability but reduce robustness; lower variance captures global patterns but may miss critical details.
+  
+Higher sparsity = more focused attention (fewer positions attended). Lower variance = more uniform distribution. These differences reflect architectural choices: DT's autoregressive RTG conditioning vs TT's joint trajectory modeling. Higher sparsity may improve interpretability but reduce robustness; lower variance captures global patterns but may miss critical details.
 
 **Connection to Performance:** The sparsity analysis directly relates to the error propagation findings: TT's higher sparsity contributes to its lower error accumulation, explaining its superior performance on sparse-reward and long-horizon tasks.
 
@@ -688,11 +643,7 @@ Our replication focused on the D4RL locomotion benchmark where DT and TT have pu
 
 **Axes:** X-axis: beam width K. Y-axis: compute cost in ms per episode (log scale). DT appears as a horizontal line (constant cost, one forward pass per step).
 
-**How it was calculated:** We measured actual inference times for both models. DT's cost = average latency per step × number of steps. TT's cost = episode time × beam width K (tested K=1,2,4,8,16,32), since each step requires K parallel forward passes.
-
-**Why this insight is novel:** While O(T) vs O(T×K) complexity is theoretically known, this provides empirical quantification of the actual trade-off, making cost-benefit decisions concrete for practitioners.
-
-**What it means:** TT's cost scales linearly with beam width—doubling K doubles compute. Higher K enables better planning but increases cost. DT maintains constant low cost but lacks beam search flexibility. Choose DT for real-time speed, TT for long-horizon quality.
+TT's cost scales linearly with beam width—doubling K doubles compute. Higher K enables better planning but increases cost. DT maintains constant low cost but lacks beam search flexibility. Choose DT for real-time speed, TT for long-horizon quality.
 
 ### Systematic Comparison: All Three Models
 
@@ -779,134 +730,23 @@ Based on our analysis, here's a systematic comparison of when each sequence mode
 
 ---
 
-# 7. Limitations and Future Works
+# 8. Limitations and Future Works
 
-## 7.a Limitations
+## 8.a Limitations
 
 While sequence modeling represents a significant advance in offline RL, several important limitations remain:
 
-### Computational Cost
+- **Computational Cost:** Using transformers in RL is challenging for real-time deployment, as deploying these models in robots or real-time environments would make them prohibitively slow. A single forward pass through a Transformer requires $O(n^2)$ attention computation, where $n$ is the sequence length. For long trajectories, this becomes a bottleneck.
+- **Trajectory Stitching:** Sequence models struggle with trajectory stitching: combining parts of different trajectories to reach goals not seen in training. This is evident in the AntMaze results, where sequence models (DT: 11.8) significantly underperform TD-learning methods (IQL: 63.2).
+- **Distribution Shift:** Like all offline RL methods, sequence models face the distribution shift problem: the policy may choose actions that never appeared in the training dataset. While sequence models are more robust than some alternatives (they don't bootstrap from potentially incorrect value estimates), they still struggle when the test-time state distribution differs significantly from training.
 
-**Transformers are memory and computation expensive.** Using transformers in RL is challenging for real-time deployment, as deploying these models in robots or real-time environments would make them prohibitively slow. A single forward pass through a Transformer requires $O(n^2)$ attention computation, where $n$ is the sequence length. For long trajectories, this becomes a bottleneck.
+## 8.b Future Works
 
-**Comparison to Alternatives:**
-- Feedforward policies: Single forward pass, constant time
-- Sequence models: Quadratic in sequence length
-- For real-time control (e.g., robotics), this latency can be unacceptable
-
-### Trajectory Stitching
-
-**Sequence models struggle with trajectory stitching**—combining parts of different trajectories to reach goals not seen in training. This is evident in the AntMaze results, where sequence models (DT: 11.8) significantly underperform TD-learning methods (IQL: 63.2).
-
-**Why This Happens:**
-- Sequence models learn to mimic trajectories from the dataset
-- They excel at following patterns they've seen
-- But they struggle to "stitch" together novel combinations of trajectory segments
-- This limits their ability to generalize to new goal configurations
-
-**When It Matters:**
-- Navigation tasks with new goal locations
-- Tasks requiring novel combinations of skills
-- Generalization beyond training distribution
-
-### Distribution Shift
-
-Like all offline RL methods, sequence models face the **distribution shift problem**: the policy may choose actions that never appeared in the training dataset. While sequence models are more robust than some alternatives (they don't bootstrap from potentially incorrect value estimates), they still struggle when the test-time state distribution differs significantly from training.
-
-### Scalability
-
-**Sequence length limitations** constrain the planning horizon. Transformers have quadratic complexity in sequence length, making very long trajectories computationally expensive. This limits the effective planning horizon, especially for DT and TT which process full trajectories autoregressively.
-
-### Real-World Deployment
-
-For real-world applications (robotics, autonomous vehicles), the computational requirements of Transformers may be prohibitive. Future work should explore:
-- Lightweight architectures for real-time control
-- Distillation from large models to smaller policies
-- Hybrid approaches combining sequence planning with fast feedforward execution
-
-# 8. Future Works
-
-Several promising directions could address the limitations above:
-
-## 8.a Hybrid Architectures
-
-**Combining sequence models with traditional RL** could leverage the strengths of both:
-- Use sequence models for **planning** (offline, slow)
-- Use lightweight policies for **execution** (online, fast)
-- Sequence models provide high-level plans, feedforward policies execute them
-
-This hybrid approach could enable real-time deployment while maintaining the planning benefits of sequence models.
-
-## 8.b Trajectory Stitching Methods
-
-**Explicit trajectory stitching** could address the AntMaze limitation:
-- Learn to identify "stitch points" where trajectories can be combined
-- Use value functions to score potential stitches
-- Combine sequence model generation with value-based selection
-
-This would enable sequence models to create novel trajectory combinations not seen in training.
-
-## 8.c Lightweight Architectures
-
-**Efficient Transformers** could reduce computational cost:
-- Linear attention mechanisms (e.g., Performer, Linformer)
-- Sparse attention patterns
-- Model distillation to smaller architectures
-- Quantization and pruning
-
-These techniques could make sequence models viable for real-time control.
-
-## 8.d Principled Hybrid Methods
-
-**Combining sequence planning with dynamic programming** could provide the best of both worlds:
-- Sequence models for distributional robustness and sparse rewards
-- Q-learning for trajectory stitching and generalization
-- Energy-based methods (IEM) for compositional planning
-
-The future lies in **hybrid architectures** that combine sequence models' distributional robustness with Q-learning's trajectory stitching, and LEAP's iterative refinement for composable, adaptable planning.
+The future of sequence-based RL lies in developing hybrid architectures that merge the reasoning depth of sequence models with the efficiency of traditional policies. By utilizing sequence models for high-level offline planning and lightweight feedforward policies for real-time execution, we can achieve deployment-ready latency without sacrificing robustness. Addressing current limitations requires integrating explicit trajectory stitching (via value functions) to enable novel path combinations in maze-like environments, alongside efficient Transformer variants (e.g., linear or sparse attention) to reduce computational overhead. Ultimately, the most capable agents will likely converge on a principled framework that combines the distributional stability of sequence modeling, the stitching capabilities of Q-learning, and the iterative refinement of energy-based methods like LEAP for composable, adaptive planning.
 
 <hr class="section-divider">
 
-# 9. Key Takeaways
-
-<div class="callout callout-success">
-<h4>Sequence modeling solves fundamental RL problems:</h4>
-<ul>
-<li><strong>Credit assignment</strong>: Attention mechanisms naturally identify which past actions led to rewards</li>
-<li><strong>Sparse rewards</strong>: Learning from full trajectory patterns eliminates the need for dense reward signals</li>
-<li><strong>Stability</strong>: Supervised learning on trajectories is more stable than bootstrapping value estimates</li>
-</ul>
-</div>
-
-<div class="callout callout-info">
-<h4>Different architectures excel at different tasks:</h4>
-<ul>
-<li><strong>Decision Transformer</strong>: Fast, simple, good for dense-reward tasks</li>
-<li><strong>Trajectory Transformer</strong>: Balanced, excellent for long-horizon and sparse-reward tasks</li>
-<li><strong>Iterative Energy Minimization</strong>: Best for compositional and structured tasks</li>
-</ul>
-</div>
-
-<div class="callout callout-new">
-<h4>Our novel analysis reveals:</h4>
-<ul>
-<li>Attention distribution patterns explain error propagation differences</li>
-<li>Sparsity connects to planning stability</li>
-<li>Beam search mitigates autoregressive compounding</li>
-<li>Bidirectional attention enables global trajectory refinement</li>
-</ul>
-</div>
-
-## The Path Forward
-
-The future lies in **hybrid architectures** that combine:
-- **Sequence models' distributional robustness** for handling uncertainty and sparse rewards
-- **Q-learning's trajectory stitching** for creating novel trajectory combinations
-- **LEAP's iterative refinement** for composable, adaptable planning
-
-These hybrid approaches could address the current limitations—computational cost, trajectory stitching, and real-time deployment—while preserving the core advantages of sequence modeling.
-
-# 10. Conclusion
+# 9. Conclusion
 
 <blockquote>
 Sequence modeling in RL represents more than a technical innovation—it's a fundamental reframing of decision-making. By treating trajectories as sequences and leveraging decades of progress in language modeling, we've opened new pathways for stable, scalable reinforcement learning. The attention patterns we've analyzed reveal how these models "think," providing interpretability that traditional RL methods often lack.
@@ -915,8 +755,7 @@ As the field continues to evolve, the integration of sequence modeling with trad
 </blockquote>
 
 
-
-# References
+# 10. References
 
 Chen, L., et al. (2021). Decision Transformer: Reinforcement Learning via Sequence Modeling. NeurIPS.   
 
@@ -941,4 +780,3 @@ Farama Foundation. (n.d.). Half Cheetah Environment. Gymnasium Documentation. ht
     }
   };
 </script>
-
