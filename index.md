@@ -19,7 +19,7 @@ This project explores a paradigm shift: treating RL as a Sequence Modeling probl
 
 <img src="RL.png" alt="Reinforcement Learning" style="max-width: 40%; height: auto; display: block; margin: 0 auto;">
 
-Reinforcement learning is the third paradigm in machine learning after supervised and unsupervised learning. An agent wanders through an environment. At any moment it sits in some state $s$. It takes an action $a$. The world replies with a reward $r$ and shifts the agent to a new state $s'$.
+Reinforcement learning is the third paradigm in machine learning after supervised and unsupervised learning [^rl_wiki]. An agent wanders through an environment. At any moment it sits in some state $s$. It takes an action $a$. The world replies with a reward $r$ and shifts the agent to a new state $s'$.
 
 Anytime an agent moves through a sequence of states, takes actions, and receives rewards, you’ve got a trajectory.You can think of it as the agent’s diary: every state visited, every choice made, and every pat-on-the-head (or slap-on-the-wrist) from the environment.   
 $τ = (s₀, a₀, r₀, s₁, a₁, r₁, …, s_T) $
@@ -169,7 +169,7 @@ This project compares two transformer-based reinforcement learning models, both 
 </div>
 
 
-**BabyAI** is a research platform designed to study instruction-following and compositional reasoning in reinforcement learning. It provides a suite of grid-world environments where agents must understand and execute natural language instructions to complete tasks.
+**BabyAI** is a research platform designed to study instruction-following and compositional reasoning in reinforcement learning [^minigrid]. It provides a suite of grid-world environments where agents must understand and execute natural language instructions to complete tasks.
 
 **Key Features:**
 - **Instruction-following**: Agents receive natural language instructions (e.g., "go to the red ball")
@@ -191,7 +191,7 @@ This project compares two transformer-based reinforcement learning models, both 
 
 ### What is HalfCheetah?
 
-**HalfCheetah** is a continuous control benchmark task from the MuJoCo physics simulator, part of the D4RL (Datasets for Deep Data-Driven Reinforcement Learning) benchmark suite. It is one of the most commonly used environments for evaluating offline reinforcement learning algorithms.
+**HalfCheetah** is a continuous control benchmark task from the MuJoCo physics simulator, part of the D4RL (Datasets for Deep Data-Driven Reinforcement Learning) benchmark suite [^halfcheetah]. It is one of the most commonly used environments for evaluating offline reinforcement learning algorithms.
 
 <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 20px; margin: 20px 0;">
   <img src="images/halfcheetah.png" alt="HalfCheetah Environment" style="max-width: 45%; height: auto;">
@@ -405,7 +405,13 @@ The future lies in hybrid architectures: combining sequence models' distribution
 # References
 Chen, L., et al. (2021). Decision Transformer: Reinforcement Learning via Sequence Modeling. NeurIPS.   
 Janner, M., et al. (2021). Offline Reinforcement Learning as One Big Sequence Modeling Problem. NeurIPS.  
-Chen, H., et al. (2023). Planning with Sequence Models through Iterative Energy Minimization. ICLR.  
+Chen, H., et al. (2023). Planning with Sequence Models through Iterative Energy Minimization. ICLR.
+
+[^rl_wiki]: Reinforcement Learning. Wikipedia. https://en.wikipedia.org/wiki/Reinforcement_learning
+
+[^minigrid]: MiniGrid Documentation. Farama Foundation. https://minigrid.farama.org/
+
+[^halfcheetah]: Half Cheetah Environment. Gymnasium Documentation. Farama Foundation. https://gymnasium.farama.org/environments/mujoco/half_cheetah/  
 
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
