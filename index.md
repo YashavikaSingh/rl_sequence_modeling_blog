@@ -4,7 +4,7 @@ title: "RL Sequence Modeling Blog"
 authors: ["Yashavika Singh", "Diksha Bagade"]
 ---
 
-# Transformers, take the Wheel! 
+# Transformers take the Wheel 
 ## Sequence Modeling in Offline RL
 
 *By Yashavika Singh and Diksha Bagade*
