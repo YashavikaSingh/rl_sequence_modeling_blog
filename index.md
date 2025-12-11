@@ -605,7 +605,7 @@ This plot tracks how the return-to-go (R̂) value changes throughout an episode.
 
 <div class="image-container">
 <figure>
-<img src="images/how_far_back does it look.png" alt="How Far Back Attention" style="max-width: 100%; height: auto;">
+<img src="images/how_far_back does it look.png" alt="How Far Back Attention" style="max-width: 70%; height: auto;">
 <figcaption>Temporal horizon analysis showing how far back each model looks when making decisions</figcaption>
 </figure>
 </div>
