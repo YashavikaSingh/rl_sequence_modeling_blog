@@ -422,12 +422,6 @@ Farama Foundation. (n.d.). MiniGrid Documentation. Farama Foundation. https://mi
 
 Farama Foundation. (n.d.). Half Cheetah Environment. Gymnasium Documentation. https://gymnasium.farama.org/environments/mujoco/half_cheetah/
 
-[^rl_wiki]: Wikipedia Contributors. (n.d.). Reinforcement Learning. Wikipedia. https://en.wikipedia.org/wiki/Reinforcement_learning
-
-[^minigrid]: Farama Foundation. (n.d.). MiniGrid Documentation. Farama Foundation. https://minigrid.farama.org/
-
-[^halfcheetah]: Farama Foundation. (n.d.). Half Cheetah Environment. Gymnasium Documentation. https://gymnasium.farama.org/environments/mujoco/half_cheetah/  
-
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <script>
