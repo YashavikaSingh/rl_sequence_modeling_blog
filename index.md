@@ -533,7 +533,7 @@ The following table compares sequence modeling approaches (DT, TT, LEAP) against
 
 ### Decision Transformers:
 
-#### Return Accumulation 
+#### **Return Accumulation **
 
 <div class="image-container">
 <figure>
@@ -558,7 +558,7 @@ This plot tracks how the return-to-go (R̂) value changes throughout an episode.
 </ul>
 
 
-#### Attention Distribution Analysis
+#### **Attention Distribution Analysis**
 
 <div class="image-container">
 <figure>
@@ -573,7 +573,7 @@ DT heavily weights RTG early (conditioning signal), then shifts to recent timest
 
 ### Trajectory Transformers: 
 
-#### How Far Back Does TT Look?
+#### **How Far Back Does TT Look?**
 
 <div class="image-container">
 <figure>
@@ -586,7 +586,7 @@ DT heavily weights RTG early (conditioning signal), then shifts to recent timest
 This analysis reveals the temporal horizon of attention—how far back in the trajectory each model looks when making decisions. DT's vertical attention stripes suggest it primarily checks recent return-to-go values, while TT's diagonal patterns indicate it focuses on immediate past context. Understanding these patterns helps explain when each model is most effective.
 </div>
 
-#### Trajectory Transformer Head Entropy Analysis
+#### **Head Entropy Analysis**
 
 <div class="image-container">
 <figure>
@@ -603,7 +603,8 @@ Lower entropy heads are specialized—focus on specific patterns (state transiti
 Decision Transformer and Trajectory Transformer share autoregressive architectures that commit to tokens sequentially—making their attention patterns and error accumulation directly comparable—while LEAP's bidirectional masked language model and iterative Gibbs sampling represent a fundamentally different inference paradigm that cannot be evaluated on the same axes.
 Our replication focused on the D4RL locomotion benchmark where DT and TT have published results; LEAP was evaluated primarily on discrete BabyAI/Atari environments with different state representations, precluding direct experimental comparison on the same tasks.
 
-#### Error Propagation Analysis
+
+#### **Error Propagation Analysis**
 
 <div class="image-container">
 <figure>
@@ -616,7 +617,7 @@ Our replication focused on the D4RL locomotion benchmark where DT and TT have pu
 
 DT's exponential growth means errors compound orders of magnitude by timestep 100—early mistakes cause later failures. TT's beam search maintains multiple hypotheses, recovering from errors via alternative paths. This explains the long-horizon performance gap: DT becomes unreliable, TT remains robust.
 
-### Sparsity Analysis
+#### **Sparsity Analysis**
 
 <div class="image-container">
 <figure>
@@ -631,7 +632,7 @@ Higher sparsity = more focused attention (fewer positions attended). Lower varia
 
 **Connection to Performance:** The sparsity analysis directly relates to the error propagation findings: TT's higher sparsity contributes to its lower error accumulation, explaining its superior performance on sparse-reward and long-horizon tasks.
 
-#### Compute Cost Comparison: DT vs TT
+#### **Compute Cost Comparison**
 
 <div class="image-container">
 <figure>
