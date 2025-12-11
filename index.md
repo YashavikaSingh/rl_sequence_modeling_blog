@@ -41,7 +41,7 @@ The Bellman equations are where the recursion magic happens. They break down lon
 
 $V^π(s) = E_{a ~ π, s' ~ P} [ r(s, a) + γ V^π(s') ]$  
 
-$Q*(s, a) = E_{s' ~ P} [ r(s, a) + γ max_{a'} Q*(s', a') ]$
+$$Q*(s, a) = E_{s' ~ P} [ r(s, a) + γ max_{a'} Q*(s', a') ]$$
 
 For control (trying to find the best policy), you get the Bellman optimality equation:
 $Q*(s, a) = E_{s' ~ P} [ r(s, a) + γ max_{a'} Q*(s', a') ]$
