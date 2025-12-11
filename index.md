@@ -479,7 +479,7 @@ The following table compares sequence modeling approaches (DT, TT, LEAP) against
 <figcaption><strong>IEM:</strong> Distributed grid-like attention states each position attends broadly across past AND future.</figcaption>
 </figure>
 </div>
-<div class="callout callout-info">
+
 <strong>This visualization displays attention heatmaps averaged across all heads for multiple transformer layers.
 
 ### Multilayer Attention Patterns
